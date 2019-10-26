@@ -11,18 +11,17 @@ TCP_PORT = 23
 BUFFER_SIZE = 1024
 MESSAGE = "Hello, World!"
 
-q = queue.LifoQueue()
-
 class Application:
-	def receiver(self):
-		global q
+	def __init__ (self):
+		self.command = None
 
+	def receiver(self):
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.connect((TCP_IP, TCP_PORT))
-		s.send(MESSAGE)
+		s.send(MESSAGE)	
 
 		conn = sqlite3.connect('solarPanel.db')
-		cursor = conn.cursor()
+		cursor = conn.cursor()	
 
 		while True:
 			data = s.recv(BUFFER_SIZE)
@@ -40,17 +39,12 @@ class Application:
 			except ValueError as e:
 				print "Unreliable data received."
 
-			if q.qsize() != 0:
-				q.qsize()
-				k = q.get()
-				q.qsize()
-				if k == 'q':
-					print "Exiting."
+			if self.command != None:
+				if self.command == 'q':
 					s.close()
 					conn.close()
 					return
-				elif k == 'c':
-					print "Creating database."
+				elif self.command == 'c':
 					cursor.execute("""CREATE TABLE voltages (
 					timeRecorded integer,
 					voltage_1 real,
@@ -59,32 +53,22 @@ class Application:
 					voltage_4 real
 					)""")
 					conn.commit()
-				elif k == 's':
-					print "Printing database."
+				elif self.command == 's':
 					cursor.execute("SELECT * FROM voltages")
 					ret = cursor.fetchall()
 					for i in ret:
 						print i
 					conn.commit()
-				elif k == 'd':
-					print "Deleting database."
+				elif self.command == 'd':
 					cursor.execute("DELETE FROM voltages")
 					conn.commit()
+				self.command = None
 
 	def inputting(self):
-	    global q
 	    while True:
-	    	# If not commands inputted
-	        if q.qsize() == 0:
-	        	# Request a command
-	            k = raw_input("Enter a command: ")
-	            # Store command in the queue
-	            q.qsize()
-                q.put(k)
-                q.qsize()
-                # If 'q', quit
-            	if k == 'q':
-	        		print "Inputting closed."
+	        if self.command == None:
+	            self.command = raw_input("Enter a command: ")
+            	if self.command == 'q':
 	        		return
 
 	def run(self):
