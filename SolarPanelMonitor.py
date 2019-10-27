@@ -24,8 +24,19 @@ class Application:
 	# ----------------- #
 
 	def commands(self):
-		conn = sqlite3.connect('solarPanel.db')
-		cursor = conn.cursor()	
+		self.conn = sqlite3.connect('solarPanel.db')
+		cursor = self.conn.cursor()	
+		
+		# Check if table exists.
+		cursor.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='voltages' ''')
+		if cursor.fetchone()[0] == 0:
+			cursor.execute("""CREATE TABLE voltages (
+			timeRecorded integer,
+			voltage_1 real,
+			voltage_2 real,
+			voltage_3 real,
+			voltage_4 real
+			)""")	
 
 		while True:
 			if self.lastData:
@@ -39,7 +50,7 @@ class Application:
 					'voltage_3': packet["voltage_3"], 
 					'voltage_4': packet["voltage_4"]
 					})
-					conn.commit()
+					self.conn.commit()
 					self.lastData = None
 				except ValueError as e:
 					pass
@@ -47,25 +58,16 @@ class Application:
 			if self.command != None:
 				if self.command == 'quit':
 					self.s.close()
-					conn.close()
-					return
-				elif self.command == 'create':
-					cursor.execute("""CREATE TABLE voltages (
-					timeRecorded integer,
-					voltage_1 real,
-					voltage_2 real,
-					voltage_3 real,
-					voltage_4 real
-					)""")
-					conn.commit()
+					self.conn.close()
+					return					
 				elif self.command == 'select':
 					cursor.execute("SELECT * FROM voltages")
 					ret = cursor.fetchall()
 					self.label['text'] = self.formatSelect(ret)
-					conn.commit()
+					self.conn.commit()
 				elif self.command == 'delete':
 					cursor.execute("DELETE FROM voltages")
-					conn.commit()
+					self.conn.commit()
 				self.command = None
 
 	# ----------------- #
@@ -81,6 +83,7 @@ class Application:
 
 	def inputting(self, command):
 		self.command = command
+
 
 	def formatSelect(self, input):
 		ret = ""
