@@ -5,11 +5,15 @@ import json
 import sqlite3
 import time
 import queue
+import tkinter as tk
 
 TCP_IP = '192.168.1.2'
 TCP_PORT = 23
 BUFFER_SIZE = 1024
 MESSAGE = "Hello, World!"
+
+HEIGHT = 500
+WIDTH = 600
 
 class Application:
 	def __init__ (self):
@@ -17,14 +21,7 @@ class Application:
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.lastData = None
 
-	def receiver(self):
-		self.s.connect((TCP_IP, TCP_PORT))
-		self.s.send(MESSAGE)	
-
-		while True:
-			self.lastData = self.s.recv(BUFFER_SIZE)
-			if self.command != None and self.command == 'quit':
-				return
+	# ----------------- #
 
 	def commands(self):
 		conn = sqlite3.connect('solarPanel.db')
@@ -45,7 +42,7 @@ class Application:
 					conn.commit()
 					self.lastData = None
 				except ValueError as e:
-					break
+					pass
 
 			if self.command != None:
 				if self.command == 'quit':
@@ -64,31 +61,59 @@ class Application:
 				elif self.command == 'select':
 					cursor.execute("SELECT * FROM voltages")
 					ret = cursor.fetchall()
-					for i in ret:
-						print i
+					self.label['text'] = self.formatSelect(ret)
 					conn.commit()
 				elif self.command == 'delete':
 					cursor.execute("DELETE FROM voltages")
 					conn.commit()
 				self.command = None
 
-	def inputting(self):
-	    while True:
-	        if self.command == None:
-	            self.command = raw_input("Enter a command: ")
-            	if self.command == 'quit':
-	        		return
+	# ----------------- #
+
+	def receiver(self):
+		self.s.connect((TCP_IP, TCP_PORT))
+		self.s.send(MESSAGE)	
+
+		while True:
+			self.lastData = self.s.recv(BUFFER_SIZE)
+			if self.command == 'quit':
+				return
+
+	def inputting(self, command):
+		self.command = command
+
+	def formatSelect(self, input):
+		ret = ""
+		for i in input:
+			ret += str(i) + "\n"
+		return ret
+
+	# ----------------- #
+
+	def monitor(self):
+		root = tk.Tk()
+		canvas = tk.Canvas(root, height=HEIGHT, width=WIDTH)
+		canvas.pack()
+		frame = tk.Frame(root, bg='#80c1ff', bd=5)
+		frame.place(relx=0.5, rely=0.1, relwidth=0.75, relheight=0.1, anchor='n')
+		entry = tk.Entry(frame, font=40)
+		entry.place(relwidth=0.65, relheight=1)
+		button = tk.Button(frame, text="Get", font=40, command=lambda: self.inputting(entry.get()))
+		button.place(relx=0.7, relheight=1, relwidth=0.3)
+		lower_frame = tk.Frame(root, bg='#80c1ff', bd=10)
+		lower_frame.place(relx=0.5, rely=0.25, relwidth=0.75, relheight=0.6, anchor='n')
+		self.label = tk.Label(lower_frame)
+		self.label.place(relwidth=1, relheight=1)
+		root.mainloop()
 
 	def run(self):
 		t1 = threading.Thread(target=self.receiver, args=())
-		t2 = threading.Thread(target=self.inputting, args=())
-		t3 = threading.Thread(target=self.commands, args=())
+		t2 = threading.Thread(target=self.commands, args=())
 		t1.start()
 		t2.start()
-		t3.start()
+		self.monitor()
 		t1.join()
 		t2.join()
-		t3.join()
 
 if __name__ == "__main__":
 	a = Application()
