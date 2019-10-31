@@ -21,6 +21,7 @@ class Application:
 		self.command = None
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.lastData = None
+		self.root = None
 
 	# ----------------- #
 
@@ -60,6 +61,7 @@ class Application:
 				if self.command == 'quit':
 					self.s.close()
 					self.conn.close()
+					self.root.quit()
 					return					
 				elif self.command == 'select':
 					cursor.execute("SELECT * FROM voltages")
@@ -111,28 +113,28 @@ class Application:
 	# ----------------- #
 
 	def monitor(self):
-		root = tk.Tk()
+		self.root = tk.Tk()
 		
-		root.winfo_toplevel().title("Solar Panel Monitor")
-		root.geometry('{}x{}'.format(WIDTH, HEIGHT))
-		root.configure(bg='#383735')
+		self.root.winfo_toplevel().title("Solar Panel Monitor")
+		self.root.geometry('{}x{}'.format(WIDTH, HEIGHT))
+		self.root.configure(bg='#383735')
 
-		frame = tk.Frame(root, bg='#383735')
+		frame = tk.Frame(self.root, bg='#383735')
 		frame.place(relx=0.5, rely=0.1, relwidth=0.75, relheight=0.1, anchor='n')
 
 		entry = tk.Entry(frame, font=40)
 		entry.place(relwidth=0.65, relheight=0.5)
 
-		button = tk.Button(frame, text="Get", font=40, command=lambda: self.inputting(entry.get()))
+		button = tk.Button(frame, text="Command", font=40, command=lambda: self.inputting(entry.get()))
 		button.place(relx=0.7, relwidth=0.3, relheight=0.5)
 
-		lower_frame = tk.Frame(root, bg='#ababab')
+		lower_frame = tk.Frame(self.root, bg='#ababab')
 		lower_frame.place(relx=0.5, rely=0.25, relwidth=0.75, relheight=0.6, anchor='n')
 
 		self.label = tk.Label(lower_frame)
 		self.label.place(relwidth=1, relheight=1)
 
-		root.mainloop()
+		self.root.mainloop()
 
 	def run(self):
 		t1 = threading.Thread(target=self.receiver, args=())
