@@ -73,11 +73,15 @@ class Application:
 	# ----------------- #
 
 	def receiver(self):
-		self.s.connect((TCP_IP, TCP_PORT))
-		self.s.send(MESSAGE)	
-
+		
 		while True:
-			self.lastData = self.s.recv(BUFFER_SIZE)
+			try:
+				self.s.connect((TCP_IP, TCP_PORT))
+				self.s.send(MESSAGE)	
+				self.lastData = self.s.recv(BUFFER_SIZE)
+			except:
+				pass
+
 			if self.command == 'quit':
 				return
 
@@ -95,8 +99,11 @@ class Application:
 
 	def monitor(self):
 		root = tk.Tk()
-		canvas = tk.Canvas(root, height=HEIGHT, width=WIDTH)
-		canvas.pack()
+		
+		root.winfo_toplevel().title("Solar Panel Monitor")
+		root.geometry('{}x{}'.format(WIDTH, HEIGHT))
+		root.configure(bg='#383735')
+
 		frame = tk.Frame(root, bg='#80c1ff', bd=5)
 		frame.place(relx=0.5, rely=0.1, relwidth=0.75, relheight=0.1, anchor='n')
 		entry = tk.Entry(frame, font=40)
