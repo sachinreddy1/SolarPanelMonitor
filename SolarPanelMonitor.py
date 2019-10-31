@@ -6,6 +6,7 @@ import sqlite3
 import time
 import queue
 import tkinter as tk
+import signal
 
 TCP_IP = '192.168.1.2'
 TCP_PORT = 23
@@ -73,14 +74,26 @@ class Application:
 	# ----------------- #
 
 	def receiver(self):
+
+		# Check for a connection
+		try:
+			signal.signal(signal.SIGALRM, handler)
+			signal.alarm(5)
+			self.s.connect((TCP_IP, TCP_PORT))
+			self.s.send(MESSAGE)	
+			signal.alarm(0)
+		except:
+			signal.alarm(0)
 		
+		# Run the receiver
 		while True:
 			try:
-				self.s.connect((TCP_IP, TCP_PORT))
-				self.s.send(MESSAGE)	
+				signal.signal(signal.SIGALRM, handler)
+				signal.alarm(5)	
 				self.lastData = self.s.recv(BUFFER_SIZE)
+				signal.alarm(0)
 			except:
-				pass
+				signal.alarm(0)
 
 			if self.command == 'quit':
 				return
@@ -104,16 +117,21 @@ class Application:
 		root.geometry('{}x{}'.format(WIDTH, HEIGHT))
 		root.configure(bg='#383735')
 
-		frame = tk.Frame(root, bg='#80c1ff', bd=5)
+		frame = tk.Frame(root, bg='#383735')
 		frame.place(relx=0.5, rely=0.1, relwidth=0.75, relheight=0.1, anchor='n')
+
 		entry = tk.Entry(frame, font=40)
-		entry.place(relwidth=0.65, relheight=1)
+		entry.place(relwidth=0.65, relheight=0.5)
+
 		button = tk.Button(frame, text="Get", font=40, command=lambda: self.inputting(entry.get()))
-		button.place(relx=0.7, relheight=1, relwidth=0.3)
-		lower_frame = tk.Frame(root, bg='#80c1ff', bd=10)
+		button.place(relx=0.7, relwidth=0.3, relheight=0.5)
+
+		lower_frame = tk.Frame(root, bg='#ababab')
 		lower_frame.place(relx=0.5, rely=0.25, relwidth=0.75, relheight=0.6, anchor='n')
+
 		self.label = tk.Label(lower_frame)
 		self.label.place(relwidth=1, relheight=1)
+
 		root.mainloop()
 
 	def run(self):
