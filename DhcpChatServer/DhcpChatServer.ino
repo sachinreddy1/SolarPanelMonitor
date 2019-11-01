@@ -65,7 +65,7 @@ void loop() {
     
     // Write JSON Object
     server.write(sendValue);
-//    Serial.print(sendValue);
+    Serial.print(sendValue);
     delay(3000);
     
     Ethernet.maintain();

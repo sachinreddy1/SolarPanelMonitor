@@ -6,6 +6,7 @@ import sqlite3
 import time
 import queue
 import tkinter as tk
+from tkinter import ttk
 import signal
 
 TCP_IP = '192.168.1.2'
@@ -22,6 +23,7 @@ class Application:
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.lastData = None
 		self.root = None
+		self.connected = False
 
 	# ----------------- #
 
@@ -71,6 +73,8 @@ class Application:
 				elif self.command == 'delete':
 					cursor.execute("DELETE FROM voltages")
 					self.conn.commit()
+				elif self.command == 'status':
+					self.label['text'] = "TRUE" if self.connected else "FALSE"
 				self.command = None
 
 	# ----------------- #
@@ -79,23 +83,30 @@ class Application:
 
 		# Check for a connection
 		try:
-			signal.signal(signal.SIGALRM, handler)
-			signal.alarm(5)
+			# signal.signal(signal.SIGALRM, handler)
+			# signal.alarm(15)
 			self.s.connect((TCP_IP, TCP_PORT))
 			self.s.send(MESSAGE)	
-			signal.alarm(0)
+			self.connected = True
+			# signal.alarm(0)
 		except:
-			signal.alarm(0)
+			# signal.alarm(0)
+			self.connected = False
+
+		# self.s.connect((TCP_IP, TCP_PORT))
+		# self.s.send(MESSAGE)
 		
 		# Run the receiver
 		while True:
-			try:
-				signal.signal(signal.SIGALRM, handler)
-				signal.alarm(5)	
-				self.lastData = self.s.recv(BUFFER_SIZE)
-				signal.alarm(0)
-			except:
-				signal.alarm(0)
+			# try:
+			# 	signal.signal(signal.SIGALRM, handler)
+			# 	signal.alarm(10)	
+			# 	self.lastData = self.s.recv(BUFFER_SIZE)
+			# 	signal.alarm(0)
+			# except:
+			# 	signal.alarm(0)
+
+			self.lastData = self.s.recv(BUFFER_SIZE)
 
 			if self.command == 'quit':
 				return
@@ -122,17 +133,20 @@ class Application:
 		frame = tk.Frame(self.root, bg='#383735')
 		frame.place(relx=0.5, rely=0.1, relwidth=0.75, relheight=0.1, anchor='n')
 
-		entry = tk.Entry(frame, font=40)
+		entry = tk.Entry(frame, font=40, bg='#ababab')
 		entry.place(relwidth=0.65, relheight=0.5)
 
 		button = tk.Button(frame, text="Command", font=40, command=lambda: self.inputting(entry.get()))
 		button.place(relx=0.7, relwidth=0.3, relheight=0.5)
 
-		lower_frame = tk.Frame(self.root, bg='#ababab')
+		lower_frame = tk.Frame(self.root)
 		lower_frame.place(relx=0.5, rely=0.25, relwidth=0.75, relheight=0.6, anchor='n')
 
-		self.label = tk.Label(lower_frame)
+		self.label = tk.Label(lower_frame, bg='#ababab')
 		self.label.place(relwidth=1, relheight=1)
+
+		self.connectedLabel = tk.Label(lower_frame, bg='#ababab')
+		self.connectedLabel.place(relwidth=1, relheight=0.2)
 
 		self.root.mainloop()
 
