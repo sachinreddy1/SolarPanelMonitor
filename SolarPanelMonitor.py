@@ -9,7 +9,7 @@ import tkinter as tk
 from tkinter import ttk
 import signal
 
-TCP_IP = '192.168.1.2'
+TCP_IP = '192.168.1.4'
 TCP_PORT = 23
 BUFFER_SIZE = 1024
 MESSAGE = "Hello, World!"
@@ -82,38 +82,26 @@ class Application:
 	def receiver(self):
 
 		# Check for a connection
+		self.s.settimeout(5)
 		try:
-			# signal.signal(signal.SIGALRM, handler)
-			# signal.alarm(15)
 			self.s.connect((TCP_IP, TCP_PORT))
-			self.s.send(MESSAGE)	
 			self.connected = True
-			# signal.alarm(0)
 		except:
-			# signal.alarm(0)
 			self.connected = False
 
-		# self.s.connect((TCP_IP, TCP_PORT))
-		# self.s.send(MESSAGE)
+		if self.connected:
+			self.s.send(MESSAGE)
 		
 		# Run the receiver
 		while True:
-			# try:
-			# 	signal.signal(signal.SIGALRM, handler)
-			# 	signal.alarm(10)	
-			# 	self.lastData = self.s.recv(BUFFER_SIZE)
-			# 	signal.alarm(0)
-			# except:
-			# 	signal.alarm(0)
-
-			self.lastData = self.s.recv(BUFFER_SIZE)
+			if self.connected:
+				self.lastData = self.s.recv(BUFFER_SIZE)
 
 			if self.command == 'quit':
 				return
 
 	def inputting(self, command):
 		self.command = command
-
 
 	def formatSelect(self, input):
 		ret = ""
@@ -126,12 +114,14 @@ class Application:
 	def monitor(self):
 		self.root = tk.Tk()
 		
+		# Main window
 		self.root.winfo_toplevel().title("Solar Panel Monitor")
 		self.root.geometry('{}x{}'.format(WIDTH, HEIGHT))
 		self.root.configure(bg='#383735')
 
+		# Top frame - Debug for commands
 		frame = tk.Frame(self.root, bg='#383735')
-		frame.place(relx=0.5, rely=0.1, relwidth=0.75, relheight=0.1, anchor='n')
+		frame.place(relx=0.5, rely=0.05, relwidth=0.75, relheight=0.1, anchor='n')
 
 		entry = tk.Entry(frame, font=40, bg='#ababab')
 		entry.place(relwidth=0.65, relheight=0.5)
@@ -139,15 +129,27 @@ class Application:
 		button = tk.Button(frame, text="Command", font=40, command=lambda: self.inputting(entry.get()))
 		button.place(relx=0.7, relwidth=0.3, relheight=0.5)
 
-		lower_frame = tk.Frame(self.root)
-		lower_frame.place(relx=0.5, rely=0.25, relwidth=0.75, relheight=0.6, anchor='n')
+		# Connection frame
+		connFrame = tk.Frame(self.root, bg='#262523')
+		connFrame.place(relx=0.2, rely=0.25, relwidth=0.3, relheight=0.6, anchor='n')
 
-		self.label = tk.Label(lower_frame, bg='#ababab')
-		self.label.place(relwidth=1, relheight=1)
+		# Data frame
+		dataFrame = tk.Frame(self.root, bg='#ababab')
+		dataFrame.place(relx=0.67, rely=0.25, relwidth=0.525, relheight=0.6, anchor='n')
 
-		self.connectedLabel = tk.Label(lower_frame, bg='#ababab')
-		self.connectedLabel.place(relwidth=1, relheight=0.2)
+		voltageEntry = tk.Entry(dataFrame, font=40) #, bg='#ababab')
+		voltageEntry.place(relx=0, rely=0, relwidth=1, relheight=0.1)
+		currentEntry = tk.Entry(dataFrame, font=40) #, bg='#ababab')
+		currentEntry.place(relx=0, rely=0.1, relwidth=1, relheight=0.1)
 
+		# Labels
+		self.label = tk.Label(dataFrame, bg='#ababab')
+		self.label.place(relx=0, rely=0.2, relwidth=1, relheight=0.8)
+
+		self.connectedLabel = tk.Label(dataFrame, bg='#ababab')
+		self.connectedLabel.place(relx=0, rely=0.2, relwidth=1, relheight=0.2)
+
+		# Main loop
 		self.root.mainloop()
 
 	def run(self):
