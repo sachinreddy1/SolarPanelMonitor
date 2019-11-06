@@ -137,10 +137,15 @@ class Application:
 		dataFrame = tk.Frame(self.root, bg='#ababab')
 		dataFrame.place(relx=0.67, rely=0.25, relwidth=0.525, relheight=0.6, anchor='n')
 
+		voltageEntryThreshold = tk.Label(dataFrame, text="Voltage Threshold: ")
+		voltageEntryThreshold.place(relx=0, rely=0, relwidth=0.25, relheight=0.1)
 		voltageEntry = tk.Entry(dataFrame, font=40) #, bg='#ababab')
-		voltageEntry.place(relx=0, rely=0, relwidth=1, relheight=0.1)
+		voltageEntry.place(relx=0.25, rely=0, relwidth=0.5, relheight=0.1)
+
+		currentEntryThreshold = tk.Label(dataFrame, text="Current Threshold: ")
+		currentEntryThreshold.place(relx=0, rely=0.1, relwidth=0.25, relheight=0.1)
 		currentEntry = tk.Entry(dataFrame, font=40) #, bg='#ababab')
-		currentEntry.place(relx=0, rely=0.1, relwidth=1, relheight=0.1)
+		currentEntry.place(relx=0.25, rely=0.1, relwidth=0.5, relheight=0.1)
 
 		# Labels
 		self.label = tk.Label(dataFrame, bg='#ababab')
