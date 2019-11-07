@@ -85,13 +85,6 @@ class Application:
 					self.conn.commit()
 				elif self.command == 'status':
 					self.label['text'] = "TRUE" if self.connected else "FALSE"
-				elif self.command == 'threshold':
-					data = {}
-					data['voltage_threshold'] = self.voltageValue
-					data['current_threshold'] = self.currentValue
-					json_data = json.dumps(data)
-					if self.connected:
-						self.s.send(json_data)
 				self.command = None
 
 	# ----------------- #
@@ -105,14 +98,16 @@ class Application:
 			self.connected = True
 		except:
 			self.connected = False
-
-		if self.connected:
-			self.s.send(MESSAGE)
 		
-		# Run the receiver
 		while True:
 			if self.connected:
-			    self.lastData = self.s.recv(BUFFER_SIZE)
+				# SEND
+				data = {}
+				data['V'] = self.voltageValue
+				data['C'] = self.currentValue
+				self.s.send(json.dumps(data))
+				# RECEIVE
+				self.lastData = self.s.recv(BUFFER_SIZE)
 				
 			if self.command == 'quit':
 				return
@@ -121,7 +116,6 @@ class Application:
 		self.command = command
 
 	def thresholdInputting(self, voltageValue, currentValue):
-		self.command = 'threshold'
 		self.voltageValue = voltageValue
 		self.currentValue = currentValue
 

@@ -72,7 +72,6 @@ void loop() {
     int len = client.available();
     if (len > 0) {
       byte buffer[80];
-      if (len > 80) len = 80;
       client.read(buffer, len);
       Serial.write(buffer, len);
     }
