@@ -69,12 +69,13 @@ void loop() {
     Serial.print("\n");
     
     // Read JSON object
-    char received[CAPACITY];
-    for (int i = 0; i < CAPACITY; i++){
-      received[i] = client.read();
+    int len = client.available();
+    if (len > 0) {
+      byte buffer[80];
+      if (len > 80) len = 80;
+      client.read(buffer, len);
+      Serial.write(buffer, len);
     }
-//    char thisChar = client.read();
-    Serial.print(received);
     
     // Wait 3 seconds
     delay(3000);

@@ -9,6 +9,8 @@ import tkinter as tk
 from tkinter import ttk
 import signal
 
+import select
+
 TCP_IP = '192.168.1.4'
 TCP_PORT = 23
 BUFFER_SIZE = 1024
@@ -110,8 +112,8 @@ class Application:
 		# Run the receiver
 		while True:
 			if self.connected:
-				self.lastData = self.s.recv(BUFFER_SIZE)
-
+			    self.lastData = self.s.recv(BUFFER_SIZE)
+				
 			if self.command == 'quit':
 				return
 
