@@ -66,6 +66,17 @@ void loop() {
     // Write JSON Object
     server.write(sendValue);
     Serial.print(sendValue);
+    Serial.print("\n");
+    
+    // Read JSON object
+    char received[CAPACITY];
+    for (int i = 0; i < CAPACITY; i++){
+      received[i] = client.read();
+    }
+//    char thisChar = client.read();
+    Serial.print(received);
+    
+    // Wait 3 seconds
     delay(3000);
     
     Ethernet.maintain();

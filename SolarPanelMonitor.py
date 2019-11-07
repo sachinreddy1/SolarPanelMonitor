@@ -19,11 +19,19 @@ WIDTH = 600
 
 class Application:
 	def __init__ (self):
-		self.command = None
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		#
 		self.lastData = None
+		#
 		self.root = None
+		#
 		self.connected = False
+		#
+		self.command = None
+		#
+		self.voltageValue = None
+		self.currentValue = None
+
 
 	# ----------------- #
 
@@ -75,6 +83,13 @@ class Application:
 					self.conn.commit()
 				elif self.command == 'status':
 					self.label['text'] = "TRUE" if self.connected else "FALSE"
+				elif self.command == 'threshold':
+					data = {}
+					data['voltage_threshold'] = self.voltageValue
+					data['current_threshold'] = self.currentValue
+					json_data = json.dumps(data)
+					if self.connected:
+						self.s.send(json_data)
 				self.command = None
 
 	# ----------------- #
@@ -102,6 +117,11 @@ class Application:
 
 	def inputting(self, command):
 		self.command = command
+
+	def thresholdInputting(self, voltageValue, currentValue):
+		self.command = 'threshold'
+		self.voltageValue = voltageValue
+		self.currentValue = currentValue
 
 	def formatSelect(self, input):
 		ret = ""
@@ -131,11 +151,11 @@ class Application:
 
 		# Connection frame
 		connFrame = tk.Frame(self.root, bg='#262523')
-		connFrame.place(relx=0.2, rely=0.25, relwidth=0.3, relheight=0.6, anchor='n')
+		connFrame.place(relx=0.2, rely=0.2, relwidth=0.3, relheight=0.7, anchor='n')
 
 		# Data frame
 		dataFrame = tk.Frame(self.root, bg='#ababab')
-		dataFrame.place(relx=0.67, rely=0.25, relwidth=0.525, relheight=0.6, anchor='n')
+		dataFrame.place(relx=0.67, rely=0.2, relwidth=0.525, relheight=0.7, anchor='n')
 
 		# Threshold Title
 		thresholdTitle = tk.Label(dataFrame, text="Thresholds:", bg='#ababab', font='TkDefaultFont 14 bold')
@@ -151,7 +171,7 @@ class Application:
 		currentEntry = tk.Entry(dataFrame, font=40)
 		currentEntry.place(relx=0.25, rely=0.2, relwidth=0.25, relheight=0.1)
 		# Entry button submission
-		thresholdEntryButton = tk.Button(dataFrame, text="OK", font=40) #, command=lambda: self.inputting(entry.get()))
+		thresholdEntryButton = tk.Button(dataFrame, text="OK", font=40, command=lambda: self.thresholdInputting(voltageEntry.get(), currentEntry.get()))
 		thresholdEntryButton.place(relx=0.5, rely=0.15, relwidth=0.2, relheight=0.1)
 
 		# OFF/ON Button
