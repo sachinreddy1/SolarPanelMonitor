@@ -33,6 +33,7 @@ class Application:
 		#
 		self.voltageValue = None
 		self.currentValue = None
+		self.power = 'ON'
 
 
 	# ----------------- #
@@ -105,6 +106,7 @@ class Application:
 				data = {}
 				data['V'] = self.voltageValue
 				data['C'] = self.currentValue
+				data['P'] = self.power
 				self.s.send(json.dumps(data))
 				# RECEIVE
 				self.lastData = self.s.recv(BUFFER_SIZE)
@@ -112,12 +114,24 @@ class Application:
 			if self.command == 'quit':
 				return
 
+	# ----------------- #
+
 	def inputting(self, command):
 		self.command = command
 
 	def thresholdInputting(self, voltageValue, currentValue):
 		self.voltageValue = voltageValue
 		self.currentValue = currentValue
+
+	def powerInputting(self):
+		if self.power == 'ON':
+			self.power = 'OFF'
+			self.togglePowerButton['text'] = 'ON'
+		else:
+			self.power = 'ON'
+			self.togglePowerButton['text'] = 'OFF'
+
+	# ----------------- #
 
 	def formatSelect(self, input):
 		ret = ""
@@ -171,8 +185,8 @@ class Application:
 		thresholdEntryButton.place(relx=0.5, rely=0.15, relwidth=0.2, relheight=0.1)
 
 		# OFF/ON Button
-		togglePowerButton = tk.Button(dataFrame, text="OFF", font=40) #, command=lambda: self.inputting(entry.get()))
-		togglePowerButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.1)
+		self.togglePowerButton = tk.Button(dataFrame, text="OFF", font=40, command=lambda: self.powerInputting())
+		self.togglePowerButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.1)
 
 		# Labels
 		self.label = tk.Label(dataFrame, bg='#ababab')
