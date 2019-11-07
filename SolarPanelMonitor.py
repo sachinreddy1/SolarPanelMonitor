@@ -159,9 +159,27 @@ class Application:
 		button = tk.Button(frame, text="Command", font=40, command=lambda: self.inputting(entry.get()))
 		button.place(relx=0.7, relwidth=0.3, relheight=0.5)
 
+		# ----------------- #
+
 		# Connection frame
 		connFrame = tk.Frame(self.root, bg='#262523')
 		connFrame.place(relx=0.2, rely=0.2, relwidth=0.3, relheight=0.7, anchor='n')
+
+		# Frame for Widget
+		widgetFrame = tk.Frame(connFrame, bg='#464646')
+		widgetFrame.place(relx=0.5, rely=0, relwidth=1.0, relheight=0.15, anchor='n')
+		# IP Label
+		self.ipLabel = tk.Label(widgetFrame, text="IP: XXX.XXX.X.X", bg='#464646', font='TkDefaultFont 10')
+		self.ipLabel.place(relx=0, rely=0.15, relwidth=1.0, relheight=0.2)
+		# IP Status
+		self.ipStatus = tk.Label(widgetFrame, text="Status: Not Connected", bg='#464646', font='TkDefaultFont 10')
+		self.ipStatus.place(relx=0, rely=0.55, relwidth=1.0, relheight=0.2)
+
+		if self.connected:
+			self.ipLabel['text'] = 'IP: ' + TCP_IP
+			self.ipStatus['text'] = 'Status: Connected'
+
+		# ----------------- #
 
 		# Data frame
 		dataFrame = tk.Frame(self.root, bg='#ababab')
