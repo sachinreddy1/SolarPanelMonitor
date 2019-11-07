@@ -94,11 +94,12 @@ class Application:
 
 		# Check for a connection
 		self.s.settimeout(5)
-		try:
-			self.s.connect((TCP_IP, TCP_PORT))
-			self.connected = True
-		except:
-			self.connected = False
+		while not self.connected:
+			try:
+				self.s.connect((TCP_IP, TCP_PORT))
+				self.connected = True
+			except:
+				self.connected = False
 		
 		while True:
 			if self.connected:
@@ -130,6 +131,7 @@ class Application:
 		else:
 			self.power = 'ON'
 			self.togglePowerButton['text'] = 'OFF'
+
 
 	# ----------------- #
 
@@ -171,13 +173,16 @@ class Application:
 		# IP Label
 		self.ipLabel = tk.Label(widgetFrame, text="IP: XXX.XXX.X.X", bg='#464646', font='TkDefaultFont 10')
 		self.ipLabel.place(relx=0, rely=0.15, relwidth=1.0, relheight=0.2)
+		self.ipLabel.config(fg="#ababab")
 		# IP Status
 		self.ipStatus = tk.Label(widgetFrame, text="Status: Not Connected", bg='#464646', font='TkDefaultFont 10')
 		self.ipStatus.place(relx=0, rely=0.55, relwidth=1.0, relheight=0.2)
+		self.ipStatus.config(fg="#cd5c5c")
 
 		if self.connected:
 			self.ipLabel['text'] = 'IP: ' + TCP_IP
 			self.ipStatus['text'] = 'Status: Connected'
+			self.ipStatus.config(fg="#32cd32")
 
 		# ----------------- #
 
