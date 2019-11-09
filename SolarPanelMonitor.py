@@ -11,7 +11,8 @@ import signal
 
 import select
 
-TCP_IP = '192.168.1.6'
+_TCP_IP = '192.168.1.6'
+TCP_IP = '192.168.1.4'
 TCP_PORT = 23
 BUFFER_SIZE = 1024
 
@@ -86,19 +87,18 @@ class Application:
 				elif self.command == 'status':
 					self.label['text'] = "TRUE" if self.connected else "FALSE"
 				elif self.command == 'sync' and not self.connected:
-					print "Trying to connect..."
-					self.s.settimeout(15)
+					self.s.settimeout(5)
+					self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 					try:
 						self.s.connect((TCP_IP, TCP_PORT))
 						self.connected = True
-						print "Connected!"
 						# Setting color
 						self.ipLabel['text'] = 'IP: ' + TCP_IP
 						self.ipStatus['text'] = 'Status: Connected'
 						self.ipStatus.config(fg="#32cd32")
 					except:
 						self.connected = False
-						print "Not connected."
+
 				self.command = None
 
 	# ----------------- #
@@ -108,7 +108,7 @@ class Application:
 		# Check for a connection
 		self.s.settimeout(5)
 		try:
-			self.s.connect((TCP_IP, TCP_PORT))
+			self.s.connect((_TCP_IP, TCP_PORT))
 			self.connected = True
 		except:
 			self.connected = False
@@ -143,7 +143,6 @@ class Application:
 		else:
 			self.power = 'ON'
 			self.togglePowerButton['text'] = 'OFF'
-
 
 	# ----------------- #
 

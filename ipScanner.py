@@ -1,23 +1,22 @@
 import subprocess 
 import socket
 
-for ping in range(1,10): 
-    address = "192.168.1." + str(ping) 
-    res = subprocess.call(['ping', '-q', '-c', '1', address]) 
-    if res == 0: 
-        print( "ping to", address, "OK")
+IP = "192.168.1."
 
+ret = []
+
+for ping in range(1,5): 
+    address = IP + str(ping) 
+    res = subprocess.call(['ping', '-q', '-c', '1', address]) 
+
+    if res == 0: 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
 	        s.connect((address, 23))
 	        s.send("Something.")
-	        print address
-	        print "----------> Connection successful. <----------"
+	        ret.append(address)
     	except Exception, e:
-        	print 'Connection failed.'
+        	pass
         s.close() 
 
-    elif res == 2: 
-        print("no response from", address) 
-    else: 
-        print("ping to", address, "failed!")
+print ret
