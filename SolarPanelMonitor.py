@@ -11,10 +11,9 @@ import signal
 
 import select
 
-TCP_IP = '192.168.1.4'
+TCP_IP = '192.168.1.6'
 TCP_PORT = 23
 BUFFER_SIZE = 1024
-MESSAGE = "Hello, World!"
 
 HEIGHT = 500
 WIDTH = 600
@@ -86,6 +85,20 @@ class Application:
 					self.conn.commit()
 				elif self.command == 'status':
 					self.label['text'] = "TRUE" if self.connected else "FALSE"
+				elif self.command == 'sync' and not self.connected:
+					print "Trying to connect..."
+					self.s.settimeout(15)
+					try:
+						self.s.connect((TCP_IP, TCP_PORT))
+						self.connected = True
+						print "Connected!"
+						# Setting color
+						self.ipLabel['text'] = 'IP: ' + TCP_IP
+						self.ipStatus['text'] = 'Status: Connected'
+						self.ipStatus.config(fg="#32cd32")
+					except:
+						self.connected = False
+						print "Not connected."
 				self.command = None
 
 	# ----------------- #
@@ -94,12 +107,11 @@ class Application:
 
 		# Check for a connection
 		self.s.settimeout(5)
-		while not self.connected:
-			try:
-				self.s.connect((TCP_IP, TCP_PORT))
-				self.connected = True
-			except:
-				self.connected = False
+		try:
+			self.s.connect((TCP_IP, TCP_PORT))
+			self.connected = True
+		except:
+			self.connected = False
 		
 		while True:
 			if self.connected:
@@ -210,6 +222,10 @@ class Application:
 		# OFF/ON Button
 		self.togglePowerButton = tk.Button(dataFrame, text="OFF", font=40, command=lambda: self.powerInputting())
 		self.togglePowerButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.1)
+
+		# SYNC Button
+		self.syncButton = tk.Button(self.root, text="SYNC", font=40, command=lambda: self.inputting('sync'))
+		self.syncButton.place(relx=0.05, rely=0.9, relwidth=0.1, relheight=0.05)
 
 		# Labels
 		self.label = tk.Label(dataFrame, bg='#ababab')
