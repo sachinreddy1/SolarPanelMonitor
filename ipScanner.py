@@ -11,12 +11,13 @@ for ping in range(1,5):
 
     if res == 0: 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(5)
         try:
 	        s.connect((address, 23))
 	        s.send("Something.")
 	        ret.append(address)
     	except Exception, e:
         	pass
-        s.close() 
+        # s.close() 
 
 print ret

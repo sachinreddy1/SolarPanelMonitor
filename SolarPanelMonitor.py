@@ -1,18 +1,17 @@
 import threading
-import curses
 import socket
 import json
 import sqlite3
 import time
-import queue
 import tkinter as tk
 from tkinter import ttk
 import signal
-
-import select
+import subprocess 
 
 _TCP_IP = '192.168.1.6'
 TCP_IP = '192.168.1.4'
+IP = "192.168.1."
+
 TCP_PORT = 23
 BUFFER_SIZE = 1024
 
@@ -112,6 +111,20 @@ class Application:
 			self.connected = True
 		except:
 			self.connected = False
+		# for ping in range(1,5): 
+		#     address = IP + str(ping) 
+		#     res = subprocess.call(['ping', '-q', '-c', '1', address]) 
+
+		#     if res == 0: 
+		#         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		#         self.s.settimeout(5)
+		#         try:
+		# 	        self.s.connect((address, TCP_PORT))
+		# 	        print "success"
+		# 	        self.connected = True
+		# 	        break
+		#     	except Exception, e:
+		#         	self.connected = False
 		
 		while True:
 			if self.connected:
