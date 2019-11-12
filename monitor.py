@@ -76,19 +76,22 @@ class Monitor:
 		j = 0
 		for i in self.application.c.connections:
 			# Frame for Widget
-			widgetFrame = tk.Frame(self.connFrame, bg=MID_GRAY_1)
-			widgetFrame.place(relx=0.5, rely= j * 0.15, relwidth=1.0, relheight=0.15, anchor='n')
+			self.widgetFrame = tk.Frame(self.connFrame, bg=MID_GRAY_1)
+			self.widgetFrame.place(relx=0.5, rely= j * 0.15, relwidth=1.0, relheight=0.15, anchor='n')
 
 			# IP Label
-			self.ipLabel = tk.Label(widgetFrame, text='IP: ' + i.ip, bg=MID_GRAY_1, font='TkDefaultFont 10')
+			self.ipLabel = tk.Label(self.widgetFrame, text='IP: ' + i.ip, bg=MID_GRAY_1, font='TkDefaultFont 10')
 			self.ipLabel.place(relx=0, rely= j * 0.2 + 0.15, relwidth=1.0, relheight=0.2)
 			self.ipLabel.config(fg=LIGHT_GRAY)
 			# IP Status
-			self.ipStatus = tk.Label(widgetFrame, text="Status: Connected", bg=MID_GRAY_1, font='TkDefaultFont 10')
+			self.ipStatus = tk.Label(self.widgetFrame, text="Status: Connected", bg=MID_GRAY_1, font='TkDefaultFont 10')
 			self.ipStatus.place(relx=0, rely= j * 0.2 + 0.55, relwidth=1.0, relheight=0.2)
 			self.ipStatus.config(fg=GREEN)
 
 			j += 1
+
+	def clearWidgets(self):
+		self.widgetFrame.destroy()
 
 	def run(self):
 		self.setup()

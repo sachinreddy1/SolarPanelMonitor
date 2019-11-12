@@ -67,18 +67,12 @@ class Application:
 				elif self.command == 'delete':
 					cursor.execute("DELETE FROM voltages")
 					self.conn.commit()
-				elif self.command == 'sync' and not self.connected:
-					self.s.settimeout(5)
-					self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-					try:
-						self.s.connect((TCP_IP, TCP_PORT))
-						self.connected = True
-						# Setting color
-						self.monitor.ipLabel['text'] = 'IP: ' + TCP_IP
-						self.monitor.ipStatus['text'] = 'Status: Connected'
-						self.monitor.ipStatus.config(fg="#32cd32")
-					except:
-						self.connected = False
+				elif self.command == 'sync':
+					self.c.clear()
+					self.monitor.clearWidgets()
+					self.monitor.updateWidgets()
+					self.c.connect()
+					self.monitor.updateWidgets()
 
 				self.command = None
 
@@ -87,7 +81,7 @@ class Application:
 	def receiver(self):
 		self.c.connect()
 		self.monitor.updateWidgets()
-		
+
 		while True:
 			for i in self.c.connections:
 				if i.connected:

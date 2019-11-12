@@ -37,6 +37,13 @@ class Connector:
 		for t in self.threads:
 			t.join()
 
+	def clear(self):
+		for i in self.connections:
+			i.socket.close()
+
+		self.connections = []
+		self.threads = []
+
 if __name__ == "__main__":
 	c = Connector()
 	c.connect()
