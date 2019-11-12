@@ -1,20 +1,11 @@
 import threading
-import socket
 import json
 import sqlite3
 import time
 import tkinter as tk
 from tkinter import ttk
-import signal
-import subprocess 
-
 from Connector import *
 
-_TCP_IP = '192.168.1.6'
-TCP_IP = '192.168.1.4'
-IP = "192.168.1."
-
-TCP_PORT = 23
 BUFFER_SIZE = 1024
 
 HEIGHT = 500
@@ -23,17 +14,11 @@ WIDTH = 600
 class Application:
 	def __init__ (self):
 		self.lastData = None
-		#
-		self.root = None
-		#
-		self.connected = False
-		#
 		self.command = None
-		#
+		
 		self.voltageValue = None
 		self.currentValue = None
 		self.power = 'ON'
-
 
 	# ----------------- #
 
@@ -84,8 +69,6 @@ class Application:
 				elif self.command == 'delete':
 					cursor.execute("DELETE FROM voltages")
 					self.conn.commit()
-				elif self.command == 'status':
-					self.label['text'] = "TRUE" if self.connected else "FALSE"
 				elif self.command == 'sync' and not self.connected:
 					self.s.settimeout(5)
 					self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -185,10 +168,11 @@ class Application:
 		self.ipStatus.place(relx=0, rely=0.55, relwidth=1.0, relheight=0.2)
 		self.ipStatus.config(fg="#cd5c5c")
 
-		if self.c.connections[0].connected:
-			self.ipLabel['text'] = 'IP: ' + self.c.connections[0].ip
-			self.ipStatus['text'] = 'Status: Connected'
-			self.ipStatus.config(fg="#32cd32")
+		if len(self.c.connections) > 0:
+			if self.c.connections[0].connected:
+				self.ipLabel['text'] = 'IP: ' + self.c.connections[0].ip
+				self.ipStatus['text'] = 'Status: Connected'
+				self.ipStatus.config(fg="#32cd32")
 
 		# ----------------- #
 

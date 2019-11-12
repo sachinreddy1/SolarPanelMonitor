@@ -3,3 +3,5 @@ class Connection:
 		self.socket = socket
 		self.ip = ip
 		self.connected = connected
+
+		
