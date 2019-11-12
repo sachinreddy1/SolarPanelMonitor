@@ -2,19 +2,16 @@ import threading
 import json
 import sqlite3
 import time
-import tkinter as tk
-from tkinter import ttk
 from Connector import *
+from Monitor import *
 
 BUFFER_SIZE = 1024
-
-HEIGHT = 500
-WIDTH = 600
 
 class Application:
 	def __init__ (self):
 		self.lastData = None
 		self.command = None
+		self.monitor = None
 		
 		self.voltageValue = None
 		self.currentValue = None
@@ -57,14 +54,14 @@ class Application:
 			if self.command != None:
 				if self.command == 'quit':
 					self.conn.close()
-					self.root.quit()
+					self.monitor.root.quit()
 					for i in self.c.connections:
 						i.socket.close()
 					return					
 				elif self.command == 'select':
 					cursor.execute("SELECT * FROM voltages")
 					ret = cursor.fetchall()
-					self.label['text'] = self.formatSelect(ret)
+					self.monitor.label['text'] = self.formatSelect(ret)
 					self.conn.commit()
 				elif self.command == 'delete':
 					cursor.execute("DELETE FROM voltages")
@@ -76,9 +73,9 @@ class Application:
 						self.s.connect((TCP_IP, TCP_PORT))
 						self.connected = True
 						# Setting color
-						self.ipLabel['text'] = 'IP: ' + TCP_IP
-						self.ipStatus['text'] = 'Status: Connected'
-						self.ipStatus.config(fg="#32cd32")
+						self.monitor.ipLabel['text'] = 'IP: ' + TCP_IP
+						self.monitor.ipStatus['text'] = 'Status: Connected'
+						self.monitor.ipStatus.config(fg="#32cd32")
 					except:
 						self.connected = False
 
@@ -117,10 +114,10 @@ class Application:
 	def powerInputting(self):
 		if self.power == 'ON':
 			self.power = 'OFF'
-			self.togglePowerButton['text'] = 'ON'
+			self.monitor.togglePowerButton['text'] = 'ON'
 		else:
 			self.power = 'ON'
-			self.togglePowerButton['text'] = 'OFF'
+			self.monitor.togglePowerButton['text'] = 'OFF'
 
 	# ----------------- #
 
@@ -130,100 +127,17 @@ class Application:
 			ret += str(i) + "\n"
 		return ret
 
-	# ----------------- #
-
-	def monitor(self):
-		self.root = tk.Tk()
-		
-		# Main window
-		self.root.winfo_toplevel().title("Solar Panel Monitor")
-		self.root.geometry('{}x{}'.format(WIDTH, HEIGHT))
-		self.root.configure(bg='#383735')
-
-		# Top frame - Debug for commands
-		frame = tk.Frame(self.root, bg='#383735')
-		frame.place(relx=0.5, rely=0.05, relwidth=0.75, relheight=0.1, anchor='n')
-
-		entry = tk.Entry(frame, font=40)
-		entry.place(relwidth=0.65, relheight=0.5)
-
-		button = tk.Button(frame, text="Command", font=40, command=lambda: self.inputting(entry.get()))
-		button.place(relx=0.7, relwidth=0.3, relheight=0.5)
-
-		# ----------------- #
-
-		# Connection frame
-		connFrame = tk.Frame(self.root, bg='#262523')
-		connFrame.place(relx=0.2, rely=0.2, relwidth=0.3, relheight=0.7, anchor='n')
-
-		# Frame for Widget
-		widgetFrame = tk.Frame(connFrame, bg='#464646')
-		widgetFrame.place(relx=0.5, rely=0, relwidth=1.0, relheight=0.15, anchor='n')
-		# IP Label
-		self.ipLabel = tk.Label(widgetFrame, text="IP: XXX.XXX.X.X", bg='#464646', font='TkDefaultFont 10')
-		self.ipLabel.place(relx=0, rely=0.15, relwidth=1.0, relheight=0.2)
-		self.ipLabel.config(fg="#ababab")
-		# IP Status
-		self.ipStatus = tk.Label(widgetFrame, text="Status: Not Connected", bg='#464646', font='TkDefaultFont 10')
-		self.ipStatus.place(relx=0, rely=0.55, relwidth=1.0, relheight=0.2)
-		self.ipStatus.config(fg="#cd5c5c")
-
-		if len(self.c.connections) > 0:
-			if self.c.connections[0].connected:
-				self.ipLabel['text'] = 'IP: ' + self.c.connections[0].ip
-				self.ipStatus['text'] = 'Status: Connected'
-				self.ipStatus.config(fg="#32cd32")
-
-		# ----------------- #
-
-		# Data frame
-		dataFrame = tk.Frame(self.root, bg='#ababab')
-		dataFrame.place(relx=0.67, rely=0.2, relwidth=0.525, relheight=0.7, anchor='n')
-
-		# Threshold Title
-		thresholdTitle = tk.Label(dataFrame, text="Thresholds:", bg='#ababab', font='TkDefaultFont 14 bold')
-		thresholdTitle.place(relx=0, rely=0, relwidth=0.5, relheight=0.1)
-		# Voltage Threshold Label and Entry
-		voltageEntryThreshold = tk.Label(dataFrame, text="Voltage: ", bg='#ababab')
-		voltageEntryThreshold.place(relx=0, rely=0.1, relwidth=0.25, relheight=0.1)
-		voltageEntry = tk.Entry(dataFrame, font=40)
-		voltageEntry.place(relx=0.25, rely=0.1, relwidth=0.25, relheight=0.1)
-		# Current Threshold Label and Entry
-		currentEntryThreshold = tk.Label(dataFrame, text="Current: ", bg='#ababab')
-		currentEntryThreshold.place(relx=0, rely=0.2, relwidth=0.25, relheight=0.1)
-		currentEntry = tk.Entry(dataFrame, font=40)
-		currentEntry.place(relx=0.25, rely=0.2, relwidth=0.25, relheight=0.1)
-		# Entry button submission
-		thresholdEntryButton = tk.Button(dataFrame, text="OK", font=40, command=lambda: self.thresholdInputting(voltageEntry.get(), currentEntry.get()))
-		thresholdEntryButton.place(relx=0.5, rely=0.15, relwidth=0.2, relheight=0.1)
-
-		# OFF/ON Button
-		self.togglePowerButton = tk.Button(dataFrame, text="OFF", font=40, command=lambda: self.powerInputting())
-		self.togglePowerButton.place(relx=0.8, rely=0, relwidth=0.2, relheight=0.1)
-
-		# SYNC Button
-		self.syncButton = tk.Button(self.root, text="SYNC", font=40, command=lambda: self.inputting('sync'))
-		self.syncButton.place(relx=0.05, rely=0.9, relwidth=0.1, relheight=0.05)
-
-		# Labels
-		self.label = tk.Label(dataFrame, bg='#ababab')
-		self.label.place(relx=0, rely=0.3, relwidth=1, relheight=0.8)
-
-		self.connectedLabel = tk.Label(dataFrame, bg='#ababab')
-		self.connectedLabel.place(relx=0, rely=0.3, relwidth=1, relheight=0.2)
-
-		# Main loop
-		self.root.mainloop()
-
-	def run(self):
+	def run(self, monitor):
 		t1 = threading.Thread(target=self.receiver, args=())
 		t2 = threading.Thread(target=self.commands, args=())
 		t1.start()
 		t2.start()
-		self.monitor()
+		self.monitor = monitor
+		self.monitor.run()
 		t1.join()
 		t2.join()
 
 if __name__ == "__main__":
 	a = Application()
-	a.run()
+	m = Monitor(a)
+	a.run(m)
