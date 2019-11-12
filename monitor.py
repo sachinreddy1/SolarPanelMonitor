@@ -50,11 +50,11 @@ class Monitor:
 		self.ipStatus.place(relx=0, rely=0.55, relwidth=1.0, relheight=0.2)
 		self.ipStatus.config(fg=RED)
 
-		# if len(self.application.c.connections) > 0:
-		# 	if self.application.c.connections[0].connected:
-		# 		self.ipLabel['text'] = 'IP: ' + self.c.connections[0].ip
-		# 		self.ipStatus['text'] = 'Status: Connected'
-		# 		self.ipStatus.config(fg=GREEN)
+		if len(self.application.c.connections) > 0:
+			if self.application.c.connections[0].connected:
+				self.ipLabel['text'] = 'IP: ' + self.application.c.connections[0].ip
+				self.ipStatus['text'] = 'Status: Connected'
+				self.ipStatus.config(fg=GREEN)
 
 		# ----------------- #
 

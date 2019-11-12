@@ -12,6 +12,7 @@ class Application:
 		self.lastData = None
 		self.command = None
 		self.monitor = None
+		self.c = Connector()
 		
 		self.voltageValue = None
 		self.currentValue = None
@@ -84,7 +85,6 @@ class Application:
 	# ----------------- #
 
 	def receiver(self):
-		self.c = Connector()
 		self.c.connect()
 
 		while True:
