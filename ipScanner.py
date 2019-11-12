@@ -1,6 +1,8 @@
 import subprocess 
 import socket
 
+from Connection import *
+
 IP = "192.168.1."
 
 ret = []
@@ -15,9 +17,11 @@ for ping in range(1,5):
         try:
 	        s.connect((address, 23))
 	        s.send("Something.")
-	        ret.append(address)
+	       	ret.append(Connection(s, address, True))  
     	except Exception, e:
         	pass
-        # s.close() 
 
-print ret
+for i in ret:
+	print i.ip
+	print i.connected
+	i.socket.close()
