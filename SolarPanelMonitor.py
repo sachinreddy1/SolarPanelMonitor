@@ -86,7 +86,8 @@ class Application:
 
 	def receiver(self):
 		self.c.connect()
-
+		self.monitor.updateWidgets()
+		
 		while True:
 			for i in self.c.connections:
 				if i.connected:
@@ -119,13 +120,13 @@ class Application:
 			self.power = 'ON'
 			self.monitor.togglePowerButton['text'] = 'OFF'
 
-	# ----------------- #
-
 	def formatSelect(self, input):
 		ret = ""
 		for i in input:
 			ret += str(i) + "\n"
 		return ret
+
+	# ----------------- #
 
 	def run(self, monitor):
 		t1 = threading.Thread(target=self.receiver, args=())

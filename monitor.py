@@ -32,31 +32,9 @@ class Monitor:
 		button = tk.Button(frame, text="Command", font=40, command=lambda: self.application.inputting(entry.get()))
 		button.place(relx=0.7, relwidth=0.3, relheight=0.5)
 
-		# ----------------- #
-
 		# Connection frame
-		connFrame = tk.Frame(self.root, bg=DARK_GRAY)
-		connFrame.place(relx=0.2, rely=0.2, relwidth=0.3, relheight=0.7, anchor='n')
-
-		# Frame for Widget
-		widgetFrame = tk.Frame(connFrame, bg=MID_GRAY_1)
-		widgetFrame.place(relx=0.5, rely=0, relwidth=1.0, relheight=0.15, anchor='n')
-		# IP Label
-		self.ipLabel = tk.Label(widgetFrame, text="IP: XXX.XXX.X.X", bg=MID_GRAY_1, font='TkDefaultFont 10')
-		self.ipLabel.place(relx=0, rely=0.15, relwidth=1.0, relheight=0.2)
-		self.ipLabel.config(fg=LIGHT_GRAY)
-		# IP Status
-		self.ipStatus = tk.Label(widgetFrame, text="Status: Not Connected", bg=MID_GRAY_1, font='TkDefaultFont 10')
-		self.ipStatus.place(relx=0, rely=0.55, relwidth=1.0, relheight=0.2)
-		self.ipStatus.config(fg=RED)
-
-		if len(self.application.c.connections) > 0:
-			if self.application.c.connections[0].connected:
-				self.ipLabel['text'] = 'IP: ' + self.application.c.connections[0].ip
-				self.ipStatus['text'] = 'Status: Connected'
-				self.ipStatus.config(fg=GREEN)
-
-		# ----------------- #
+		self.connFrame = tk.Frame(self.root, bg=DARK_GRAY)
+		self.connFrame.place(relx=0.2, rely=0.2, relwidth=0.3, relheight=0.7, anchor='n')
 
 		# Data frame
 		dataFrame = tk.Frame(self.root, bg=LIGHT_GRAY)
@@ -92,7 +70,25 @@ class Monitor:
 		self.label.place(relx=0, rely=0.3, relwidth=1, relheight=0.8)
 
 		self.connectedLabel = tk.Label(dataFrame, bg=LIGHT_GRAY)
-		self.connectedLabel.place(relx=0, rely=0.3, relwidth=1, relheight=0.2)		
+		self.connectedLabel.place(relx=0, rely=0.3, relwidth=1, relheight=0.2)	
+
+	def updateWidgets(self):
+		j = 0
+		for i in self.application.c.connections:
+			# Frame for Widget
+			widgetFrame = tk.Frame(self.connFrame, bg=MID_GRAY_1)
+			widgetFrame.place(relx=0.5, rely= j * 0.15, relwidth=1.0, relheight=0.15, anchor='n')
+
+			# IP Label
+			self.ipLabel = tk.Label(widgetFrame, text='IP: ' + i.ip, bg=MID_GRAY_1, font='TkDefaultFont 10')
+			self.ipLabel.place(relx=0, rely= j * 0.2 + 0.15, relwidth=1.0, relheight=0.2)
+			self.ipLabel.config(fg=LIGHT_GRAY)
+			# IP Status
+			self.ipStatus = tk.Label(widgetFrame, text="Status: Connected", bg=MID_GRAY_1, font='TkDefaultFont 10')
+			self.ipStatus.place(relx=0, rely= j * 0.2 + 0.55, relwidth=1.0, relheight=0.2)
+			self.ipStatus.config(fg=GREEN)
+
+			j += 1
 
 	def run(self):
 		self.setup()
