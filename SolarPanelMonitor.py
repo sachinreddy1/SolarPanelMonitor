@@ -8,6 +8,8 @@ from tkinter import ttk
 import signal
 import subprocess 
 
+from Connector import *
+
 _TCP_IP = '192.168.1.6'
 TCP_IP = '192.168.1.4'
 IP = "192.168.1."
@@ -20,8 +22,6 @@ WIDTH = 600
 
 class Application:
 	def __init__ (self):
-		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		#
 		self.lastData = None
 		#
 		self.root = None
@@ -71,9 +71,10 @@ class Application:
 
 			if self.command != None:
 				if self.command == 'quit':
-					self.s.close()
 					self.conn.close()
 					self.root.quit()
+					for i in self.c.connections:
+						i.socket.close()
 					return					
 				elif self.command == 'select':
 					cursor.execute("SELECT * FROM voltages")
@@ -103,40 +104,21 @@ class Application:
 	# ----------------- #
 
 	def receiver(self):
+		self.c = Connector()
+		self.c.connect()
 
-		# Check for a connection
-		self.s.settimeout(5)
-		try:
-			self.s.connect((_TCP_IP, TCP_PORT))
-			self.connected = True
-		except:
-			self.connected = False
-		# for ping in range(1,5): 
-		#     address = IP + str(ping) 
-		#     res = subprocess.call(['ping', '-q', '-c', '1', address]) 
-
-		#     if res == 0: 
-		#         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		#         self.s.settimeout(5)
-		#         try:
-		# 	        self.s.connect((address, TCP_PORT))
-		# 	        print "success"
-		# 	        self.connected = True
-		# 	        break
-		#     	except Exception, e:
-		#         	self.connected = False
-		
 		while True:
-			if self.connected:
-				# SEND
-				data = {}
-				data['V'] = self.voltageValue
-				data['C'] = self.currentValue
-				data['P'] = self.power
-				self.s.send(json.dumps(data))
-				# RECEIVE
-				self.lastData = self.s.recv(BUFFER_SIZE)
-				
+			for i in self.c.connections:
+				if i.connected:
+					# SEND
+					data = {}
+					data['V'] = self.voltageValue
+					data['C'] = self.currentValue
+					data['P'] = self.power
+					i.socket.send(json.dumps(data))
+					# RECEIVE
+					self.lastData = i.socket.recv(BUFFER_SIZE)
+					
 			if self.command == 'quit':
 				return
 
@@ -203,8 +185,8 @@ class Application:
 		self.ipStatus.place(relx=0, rely=0.55, relwidth=1.0, relheight=0.2)
 		self.ipStatus.config(fg="#cd5c5c")
 
-		if self.connected:
-			self.ipLabel['text'] = 'IP: ' + TCP_IP
+		if self.c.connections[0].connected:
+			self.ipLabel['text'] = 'IP: ' + self.c.connections[0].ip
 			self.ipStatus['text'] = 'Status: Connected'
 			self.ipStatus.config(fg="#32cd32")
 
