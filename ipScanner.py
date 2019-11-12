@@ -1,13 +1,14 @@
-import subprocess 
+import threading
+import subprocess
 import socket
 
 from Connection import *
 
 IP = "192.168.1."
-
 ret = []
+threads = []
 
-for ping in range(1,5): 
+def connect(ping):
     address = IP + str(ping) 
     res = subprocess.call(['ping', '-q', '-c', '1', address]) 
 
@@ -20,6 +21,15 @@ for ping in range(1,5):
 	       	ret.append(Connection(s, address, True))  
     	except Exception, e:
         	pass
+
+for ping in range(1,5): 
+	threads.append(threading.Thread(target=connect, args=(ping,)))
+
+for t in threads:
+	t.start()
+
+for t in threads:
+	t.join()
 
 for i in ret:
 	print i.ip
