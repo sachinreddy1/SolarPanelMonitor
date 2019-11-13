@@ -82,6 +82,9 @@ class Application:
 		self.c.connect()
 		self.monitor.updateWidgets()
 
+		for i in self.c.connections:
+			i.socket.send("Something.")
+
 		while True:
 			for i in self.c.connections:
 				if i.connected:

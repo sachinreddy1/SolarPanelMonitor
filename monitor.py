@@ -15,6 +15,7 @@ class Monitor:
 	def __init__ (self, application):
 		self.root = tk.Tk()
 		self.application = application
+		self.widgetFrame = None
 
 	def setup(self):		
 		# Main window
@@ -81,17 +82,18 @@ class Monitor:
 
 			# IP Label
 			self.ipLabel = tk.Label(self.widgetFrame, text='IP: ' + i.ip, bg=MID_GRAY_1, font='TkDefaultFont 10')
-			self.ipLabel.place(relx=0, rely= j * 0.2 + 0.15, relwidth=1.0, relheight=0.2)
+			self.ipLabel.place(relx=0, rely= j * 0.2 + 0.10, relwidth=1.0, relheight=0.2)
 			self.ipLabel.config(fg=LIGHT_GRAY)
 			# IP Status
 			self.ipStatus = tk.Label(self.widgetFrame, text="Status: Connected", bg=MID_GRAY_1, font='TkDefaultFont 10')
-			self.ipStatus.place(relx=0, rely= j * 0.2 + 0.55, relwidth=1.0, relheight=0.2)
+			self.ipStatus.place(relx=0, rely= j * 0.2 + 0.50, relwidth=1.0, relheight=0.2)
 			self.ipStatus.config(fg=GREEN)
 
 			j += 1
 
 	def clearWidgets(self):
-		self.widgetFrame.destroy()
+		if self.widgetFrame:
+			self.widgetFrame.destroy()
 
 	def run(self):
 		self.setup()
