@@ -76,17 +76,18 @@ class Monitor:
 	def updateWidgets(self):
 		j = 0
 		for i in self.application.c.connections:
+			BACKGROUND = MID_GRAY_1 if j == 0 else DARK_GRAY
 			# Frame for Widget
-			self.widgetFrame = tk.Frame(self.connFrame, bg=MID_GRAY_1)
+			self.widgetFrame = tk.Frame(self.connFrame, bg=BACKGROUND)
 			self.widgetFrame.place(relx=0.5, rely= j * 0.15, relwidth=1.0, relheight=0.15, anchor='n')
 
 			# IP Label
-			self.ipLabel = tk.Label(self.widgetFrame, text='IP: ' + i.ip, bg=MID_GRAY_1, font='TkDefaultFont 10')
-			self.ipLabel.place(relx=0, rely= j * 0.2 + 0.10, relwidth=1.0, relheight=0.2)
+			self.ipLabel = tk.Label(self.widgetFrame, text='IP: ' + i.ip, bg=BACKGROUND, font='TkDefaultFont 10')
+			self.ipLabel.place(relx=0, rely= 0.20, relwidth=1.0, relheight=0.2)
 			self.ipLabel.config(fg=LIGHT_GRAY)
 			# IP Status
-			self.ipStatus = tk.Label(self.widgetFrame, text="Status: Connected", bg=MID_GRAY_1, font='TkDefaultFont 10')
-			self.ipStatus.place(relx=0, rely= j * 0.2 + 0.50, relwidth=1.0, relheight=0.2)
+			self.ipStatus = tk.Label(self.widgetFrame, text="Status: Connected", bg=BACKGROUND, font='TkDefaultFont 10')
+			self.ipStatus.place(relx=0, rely= 0.50, relwidth=1.0, relheight=0.2)
 			self.ipStatus.config(fg=GREEN)
 
 			j += 1
