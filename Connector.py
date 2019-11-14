@@ -32,19 +32,19 @@ class Connector:
 
    # ------------- #
 
-   # def connect(self):
-   #    for i in range(1,NUM_CONNECTIONS): 
-   #       self.threads.append(threading.Thread(target=self.scan, args=(i,)))
-   #    for t in self.threads:
-   #       t.start()
-   #    for t in self.threads:
-   #       t.join()
-   #    print "DONE."
-
    def connect(self):
       for i in range(1,NUM_CONNECTIONS): 
-         self.scan(i)
+         self.threads.append(threading.Thread(target=self.scan, args=(i,)))
+      for t in self.threads:
+         t.start()
+      for t in self.threads:
+         t.join()
       print "DONE."
+
+   # def connect(self):
+   #    for i in range(1,NUM_CONNECTIONS): 
+   #       self.scan(i)
+   #    print "DONE."
 
    # def connect(self):
    #    self.scan("192.168.1.7")
