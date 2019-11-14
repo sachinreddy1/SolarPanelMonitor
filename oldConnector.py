@@ -13,30 +13,36 @@ class Connector:
 		self.threads = []
 		self.connections = []
 
-	def ping(self, i):
+	def scan(self, i):
 		address = IP + str(i) 
 		res = subprocess.call(['ping', '-q', '-c', '1', address]) 
 
 		if res == 0: 
 			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			s.settimeout(5)
+			socket.setdefaulttimeout(1)
+			s.settimeout(1)
 	        try:
 		        s.connect((address, TCP_PORT))
 		        s.send("Something.")
 		        print "---> CONNECTED | " + address + " <---"
-		       	self.connections.append(Connection(s, address, True))  
+		       	self.connections.append(Connection(s, address, TCP_PORT, True))  
 	    	except Exception, e:
 	        	pass
         	
-	def connect(self):
-		for i in range(1,NUM_CONNECTIONS): 
-			self.threads.append(threading.Thread(target=self.ping, args=(i,)))
+	# def connect(self):
+	# 	for i in range(1,NUM_CONNECTIONS): 
+	# 		self.threads.append(threading.Thread(target=self.scan, args=(i,)))
 			
-		for t in self.threads:
-			t.start()
+	# 	for t in self.threads:
+	# 		t.start()
 
-		for t in self.threads:
-			t.join()
+	# 	for t in self.threads:
+	# 		t.join()
+
+	def connect(self):
+  		for i in range(1,NUM_CONNECTIONS): 
+ 			self.scan(i)
+		print len(self.connections)
 
 	def clear(self):
 		for i in self.connections:

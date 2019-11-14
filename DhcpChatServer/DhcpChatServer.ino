@@ -54,10 +54,10 @@ void loop() {
 
     // Create JSON Object
     StaticJsonDocument<CAPACITY> root;
-    root["voltage_1"] = 1.0;
-    root["voltage_2"] = 2.0;
-    root["voltage_3"] = 3.0;
-    root["voltage_4"] = 4.0;
+    root["V1"] = 1.0;
+    root["V2"] = 2.0;
+    root["V3"] = 3.0;
+    root["V4"] = 4.0;
 
     // Serialize JSON Object to char array
     char sendValue[CAPACITY];

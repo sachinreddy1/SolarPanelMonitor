@@ -5,6 +5,8 @@ import time
 from Connector import *
 from Monitor import *
 
+from Connection import *
+
 BUFFER_SIZE = 1024
 
 class Application:
@@ -42,10 +44,10 @@ class Application:
 					cursor.execute("INSERT INTO voltages VALUES (:timeRecorded, :voltage_1, :voltage_2, :voltage_3, :voltage_4)", 
 					{
 					'timeRecorded': time.time(), 
-					'voltage_1': packet["voltage_1"], 
-					'voltage_2': packet["voltage_2"], 
-					'voltage_3': packet["voltage_3"], 
-					'voltage_4': packet["voltage_4"]
+					'voltage_1': packet["V1"], 
+					'voltage_2': packet["V2"], 
+					'voltage_3': packet["V3"], 
+					'voltage_4': packet["V4"]
 					})
 					self.conn.commit()
 					self.lastData = None
@@ -81,9 +83,6 @@ class Application:
 	def receiver(self):
 		self.c.connect()
 		self.monitor.updateWidgets()
-
-		for i in self.c.connections:
-			i.socket.send("Something.")
 
 		while True:
 			for i in self.c.connections:
