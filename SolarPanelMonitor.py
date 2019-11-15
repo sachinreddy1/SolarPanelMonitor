@@ -81,7 +81,7 @@ class Application:
 
 		while True:
 			for i in self.c.connections:
-				if i.connected:
+				if i.connected and self.command != 'sync' and self.command != 'quit':
 					# SEND
 					data = {}
 					data['V'] = i.voltageValue

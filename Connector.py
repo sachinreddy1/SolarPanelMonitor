@@ -49,8 +49,8 @@ class Connector:
    # ------------- #
 
    def clear(self):
-      # for i in self.connections:
-      #    i.socket.close()
+      for i in self.connections:
+         i.socket.close()
 
       self.connections = []
       self.threads = []
