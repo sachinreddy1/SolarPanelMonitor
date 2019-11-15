@@ -4,7 +4,6 @@ import sqlite3
 import time
 from Connector import *
 from Monitor import *
-
 from Connection import *
 
 BUFFER_SIZE = 1024
@@ -15,10 +14,6 @@ class Application:
 		self.command = None
 		self.monitor = None
 		self.c = Connector()
-		
-		self.voltageValue = None
-		self.currentValue = None
-		self.power = 'ON'
 
 	# ----------------- #
 
@@ -89,9 +84,9 @@ class Application:
 				if i.connected:
 					# SEND
 					data = {}
-					data['V'] = self.voltageValue
-					data['C'] = self.currentValue
-					data['P'] = self.power
+					data['V'] = i.voltageValue
+					data['C'] = i.currentValue
+					data['P'] = i.power
 					i.socket.send(json.dumps(data))
 					# RECEIVE
 					self.lastData = i.socket.recv(BUFFER_SIZE)
@@ -104,17 +99,17 @@ class Application:
 	def inputting(self, command):
 		self.command = command
 
-	def thresholdInputting(self, voltageValue, currentValue):
-		self.voltageValue = voltageValue
-		self.currentValue = currentValue
+	def thresholdInputting(self, voltageValue, currentValue, i):
+		self.c.connections[i].voltageValue = voltageValue
+		self.c.connections[i].currentValue = currentValue
 
-	def powerInputting(self):
-		if self.power == 'ON':
-			self.power = 'OFF'
-			self.monitor.togglePowerButton['text'] = 'ON'
+	def powerInputting(self, i):
+		if self.c.connections[i].power == 'ON':
+			self.c.connections[i].power = 'OFF'
+			self.monitor.togglePowerButton['text'] = 'ON'	#
 		else:
-			self.power = 'ON'
-			self.monitor.togglePowerButton['text'] = 'OFF'
+			self.c.connections[i].power = 'ON'
+			self.monitor.togglePowerButton['text'] = 'OFF'	#
 
 	def formatSelect(self, input):
 		ret = ""

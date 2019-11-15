@@ -5,4 +5,7 @@ class Connection:
 		self.port = port
 		self.connected = connected
 
+		self.voltageValue = None
+		self.currentValue = None
+		self.power = 'ON'
 
