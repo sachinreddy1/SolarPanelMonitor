@@ -8,5 +8,6 @@ class Connection:
 		self.voltageValue = None
 		self.currentValue = None
 		self.temperatureValue = None
+		self.configSwitch = 0
 		self.power = 'ON'
 

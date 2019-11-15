@@ -87,6 +87,7 @@ class Application:
 					data['V'] = i.voltageValue
 					data['C'] = i.currentValue
 					data['T'] = i.temperatureValue
+					data['S'] = i.configSwitch
 					data['P'] = i.power
 					i.socket.send(json.dumps(data))
 					# RECEIVE
@@ -104,6 +105,9 @@ class Application:
 		self.c.connections[i].voltageValue = voltageValue
 		self.c.connections[i].currentValue = currentValue
 		self.c.connections[i].temperatureValue = temperatureValue
+
+	def configSwitchInputting(self, connection, i):
+		self.c.connections[connection].configSwitch = i
 
 	def powerInputting(self, i):
 		if self.c.connections[i].power == 'ON':
