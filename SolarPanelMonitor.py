@@ -86,6 +86,7 @@ class Application:
 					data = {}
 					data['V'] = i.voltageValue
 					data['C'] = i.currentValue
+					data['T'] = i.temperatureValue
 					data['P'] = i.power
 					i.socket.send(json.dumps(data))
 					# RECEIVE
@@ -99,9 +100,10 @@ class Application:
 	def inputting(self, command):
 		self.command = command
 
-	def thresholdInputting(self, voltageValue, currentValue, i):
+	def thresholdInputting(self, voltageValue, currentValue, temperatureValue, i):
 		self.c.connections[i].voltageValue = voltageValue
 		self.c.connections[i].currentValue = currentValue
+		self.c.connections[i].temperatureValue = temperatureValue
 
 	def powerInputting(self, i):
 		if self.c.connections[i].power == 'ON':
