@@ -15,7 +15,7 @@ class Monitor:
 	def __init__ (self, application):
 		self.root = tk.Tk()
 		self.application = application
-		self.widgetFrame = None
+		self.widgetFrames = []
 
 	def setup(self):		
 		# Main window
@@ -78,23 +78,45 @@ class Monitor:
 		for i in self.application.c.connections:
 			BACKGROUND = MID_GRAY_1 if j == 0 else DARK_GRAY
 			# Frame for Widget
-			self.widgetFrame = tk.Frame(self.connFrame, bg=BACKGROUND)
-			self.widgetFrame.place(relx=0.5, rely= j * 0.15, relwidth=1.0, relheight=0.15, anchor='n')
+			widgetFrame = tk.Frame(self.connFrame, bg=BACKGROUND)
+			widgetFrame.place(relx=0.5, rely= j * 0.15, relwidth=1.0, relheight=0.15, anchor='n')
 
 			# IP Label
-			self.ipLabel = tk.Label(self.widgetFrame, text='IP: ' + i.ip, bg=BACKGROUND, font='TkDefaultFont 10')
-			self.ipLabel.place(relx=0, rely= 0.20, relwidth=1.0, relheight=0.2)
-			self.ipLabel.config(fg=LIGHT_GRAY)
+			ipLabel = tk.Label(widgetFrame, text='IP: ' + i.ip, bg=BACKGROUND, font='TkDefaultFont 10')
+			ipLabel.place(relx=0, rely= 0.20, relwidth=1.0, relheight=0.2)
+			ipLabel.config(fg=LIGHT_GRAY)
 			# IP Status
-			self.ipStatus = tk.Label(self.widgetFrame, text="Status: Connected", bg=BACKGROUND, font='TkDefaultFont 10')
-			self.ipStatus.place(relx=0, rely= 0.50, relwidth=1.0, relheight=0.2)
-			self.ipStatus.config(fg=GREEN)
+			ipStatus = tk.Label(widgetFrame, text="Status: Connected", bg=BACKGROUND, font='TkDefaultFont 10')
+			ipStatus.place(relx=0, rely= 0.50, relwidth=1.0, relheight=0.2)
+			ipStatus.config(fg=GREEN)
 
+			l = [widgetFrame, ipLabel, ipStatus]
+			widgetFrame.bind('<Button-1>', lambda event, h=widgetFrame: self.frameInteraction(event, l, BACKGROUND))
+			ipLabel.bind('<Button-1>', lambda event, h=ipLabel: self.labelInteraction(event, l))
+			ipStatus.bind('<Button-1>', lambda event, h=ipStatus: self.labelInteraction(event, l))
+			widgetFrame.bind("<Enter>", lambda event, h=widgetFrame: self.frameInteraction(event, l, BACKGROUND))
+			widgetFrame.bind("<Leave>", lambda event, h=widgetFrame: self.frameInteraction(event, l, BACKGROUND))
+
+			self.widgetFrames.append(widgetFrame)
 			j += 1
 
+	# ------------- #
+
+	def labelInteraction(self, event, l):
+		if event.type is '4': color = MID_GRAY_1	# Clicked
+		for i in l: i.configure(bg=color)
+
+	def frameInteraction(self, event, l, bg):
+		if event.type is '4': color = MID_GRAY_1	# Clicked
+		if event.type is '7': color = MID_GRAY_2	# Entered
+		if event.type is '8': color = bg	# Exited
+		for i in l: i.configure(bg=color)
+
+	# ------------- #
+
 	def clearWidgets(self):
-		if self.widgetFrame:
-			self.widgetFrame.destroy()
+		for i in self.widgetFrames:
+			i.destroy()
 
 	def run(self):
 		self.setup()

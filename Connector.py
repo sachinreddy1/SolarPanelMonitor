@@ -46,10 +46,6 @@ class Connector:
    #       self.scan(i)
    #    print "DONE."
 
-   # def connect(self):
-   #    self.scan("192.168.1.7")
-   #    print "DONE."
-
    # ------------- #
 
    def clear(self):
