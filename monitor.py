@@ -68,14 +68,17 @@ class Monitor:
 
 		# Output Configuration
 		var1 = tk.IntVar()
-		checkboxA = tk.Checkbutton(self.dataFrame, text="A", variable=var1, command=lambda: self.updateCheckbox(0))
-		checkboxA.place(relx=0.85, rely=0.16, relwidth=0.15, relheight=0.08)
+		checkboxA = tk.Checkbutton(self.dataFrame, text="X", variable=var1, command=lambda: self.updateCheckbox(0))
+		checkboxA.place(relx=0.85, rely=0.08, relwidth=0.15, relheight=0.08)
 		var2 = tk.IntVar()
-		checkboxB = tk.Checkbutton(self.dataFrame, text="B", variable=var2, command=lambda: self.updateCheckbox(1))
-		checkboxB.place(relx=0.85, rely=0.24, relwidth=0.15, relheight=0.08)
+		checkboxB = tk.Checkbutton(self.dataFrame, text="CD", variable=var2, command=lambda: self.updateCheckbox(1))
+		checkboxB.place(relx=0.85, rely=0.16, relwidth=0.15, relheight=0.08)
 		var3 = tk.IntVar()
-		checkboxC = tk.Checkbutton(self.dataFrame, text="C", variable=var3, command=lambda: self.updateCheckbox(2))
-		checkboxC.place(relx=0.85, rely=0.32, relwidth=0.15, relheight=0.08)
+		checkboxC = tk.Checkbutton(self.dataFrame, text="BC", variable=var3, command=lambda: self.updateCheckbox(2))
+		checkboxC.place(relx=0.85, rely=0.24, relwidth=0.15, relheight=0.08)
+		var4 = tk.IntVar()
+		checkboxD = tk.Checkbutton(self.dataFrame, text="AD", variable=var3, command=lambda: self.updateCheckbox(3))
+		checkboxD.place(relx=0.85, rely=0.32, relwidth=0.15, relheight=0.08)
 
 		self.vars = [var1, var2, var3]
 
