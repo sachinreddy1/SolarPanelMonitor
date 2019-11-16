@@ -36,27 +36,62 @@ void loop() {
 
   if (client) {
     // Create JSON Object
-    StaticJsonDocument<CAPACITY> root;
-    root["V1"] = 1.0;
-    root["V2"] = 2.0;
-    root["V3"] = 3.0;
-    root["V4"] = 4.0;
+    StaticJsonDocument<CAPACITY> sendObj;
+    sendObj["V1"] = 1.0;
+    sendObj["V2"] = 2.0;
+    sendObj["V3"] = 3.0;
+    sendObj["C1"] = 4.0;
+    sendObj["T1"] = 0.0;
+    sendObj["T2"] = 1.0;
+    sendObj["T3"] = 2.0;
+    sendObj["T4"] = 3.0;
+    sendObj["T5"] = 4.0;
+    sendObj["T6"] = 5.0;
 
     // Serialize JSON Object to char array
     char sendValue[CAPACITY];
-    serializeJson(root, sendValue);
+    serializeJson(sendObj, sendValue);
     
     // Write JSON Object
     server.write(sendValue);
     Serial.print(sendValue);
     Serial.print("\n");
+
+    // --------------------------------------- //
     
     // Read JSON object
     int len = client.available();
     if (len > 0) {
       byte buffer[80];
       client.read(buffer, len);
-      Serial.write(buffer, len);
+
+      // Parse the JSON object
+      StaticJsonDocument<CAPACITY> receiveObj;
+      deserializeJson(receiveObj, buffer);
+      
+      // Storing JSON values individually
+      float voltageVal = receiveObj["V"];
+      float currentVal = receiveObj["C"];
+      float temperatureVal = receiveObj["T"];
+      int switchVal = receiveObj["S"];
+      String powerVal = receiveObj["P"];
+
+      // Printing values individually
+      Serial.print("Voltage Threshold: ");
+      Serial.print(voltageVal);
+      Serial.print("\n");
+      Serial.print("Current Threshold: ");
+      Serial.print(currentVal);
+      Serial.print("\n");
+      Serial.print("Temperature Threshold: ");
+      Serial.print(temperatureVal);
+      Serial.print("\n");
+      Serial.print("Switch Configuration: ");
+      Serial.print(switchVal);
+      Serial.print("\n");
+      Serial.print("Power Value: ");
+      Serial.print(powerVal);
+      Serial.print("\n");
     }
     
     // Wait 3 seconds

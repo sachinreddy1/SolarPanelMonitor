@@ -77,10 +77,10 @@ class Monitor:
 		checkboxC = tk.Checkbutton(self.dataFrame, text="BC", variable=var3, command=lambda: self.updateCheckbox(2))
 		checkboxC.place(relx=0.85, rely=0.24, relwidth=0.15, relheight=0.08)
 		var4 = tk.IntVar()
-		checkboxD = tk.Checkbutton(self.dataFrame, text="AD", variable=var3, command=lambda: self.updateCheckbox(3))
+		checkboxD = tk.Checkbutton(self.dataFrame, text="AD", variable=var4, command=lambda: self.updateCheckbox(3))
 		checkboxD.place(relx=0.85, rely=0.32, relwidth=0.15, relheight=0.08)
 
-		self.vars = [var1, var2, var3]
+		self.vars = [var1, var2, var3, var4]
 
 		# Entry button submission
 		thresholdEntryButton = tk.Button(self.dataFrame, text="OK", font=40, command=lambda: self.application.thresholdInputting(voltageEntry.get(), currentEntry.get(), temperatureEntry.get(), self.selected))
