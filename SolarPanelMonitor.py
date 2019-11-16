@@ -29,20 +29,32 @@ class Application:
 			voltage_1 real,
 			voltage_2 real,
 			voltage_3 real,
-			voltage_4 real
+			current_1 real,
+			temperature_1 real,
+			temperature_2 real,
+			temperature_3 real,
+			temperature_4 real,
+			temperature_5 real,
+			temperature_6 real
 			)""")	
 
 		while True:
 			if self.lastData:
 				try:
 					packet = json.loads(self.lastData)
-					cursor.execute("INSERT INTO voltages VALUES (:timeRecorded, :voltage_1, :voltage_2, :voltage_3, :voltage_4)", 
+					cursor.execute("INSERT INTO voltages VALUES (:timeRecorded, :voltage_1, :voltage_2, :voltage_3, :current_1, :temperature_1, :temperature_2, :temperature_3, :temperature_4, :temperature_5, :temperature_6)", 
 					{
 					'timeRecorded': time.time(), 
 					'voltage_1': packet["V1"], 
 					'voltage_2': packet["V2"], 
 					'voltage_3': packet["V3"], 
-					'voltage_4': packet["V4"]
+					'current_1': packet["C1"],
+					'temperature_1': packet["T1"],
+					'temperature_2': packet["T2"],
+					'temperature_3': packet["T3"],
+					'temperature_4': packet["T4"],
+					'temperature_5': packet["T5"],
+					'temperature_6': packet["T6"]
 					})
 					self.conn.commit()
 					self.lastData = None

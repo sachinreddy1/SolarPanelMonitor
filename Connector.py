@@ -2,7 +2,8 @@ import socket
 import threading
 from Connection import *
 
-IP = "192.168.1."
+# IP = "192.168.1."
+IP = "192.168.0."
 TCP_PORT = 23
 NUM_CONNECTIONS = 10
 
@@ -33,7 +34,7 @@ class Connector:
    # ------------- #
 
    def connect(self):
-      for i in range(1,NUM_CONNECTIONS): 
+      for i in range(15,25): 
          self.threads.append(threading.Thread(target=self.scan, args=(i,)))
       for t in self.threads:
          t.start()
