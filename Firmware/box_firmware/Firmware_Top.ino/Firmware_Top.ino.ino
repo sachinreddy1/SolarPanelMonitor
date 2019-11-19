@@ -1,12 +1,3 @@
-/*Editors Notes: 1. Remove all Serial Prints?
- *               2. Get rid of the threshold variables, only for the serial prints. Most are stored inside the class objects.
- *               3. Ask Dillon if we need variables for all four channel or if we are going to be reading one voltage at a time.
- *               4. Get with Sachin on interfacig with Ethernet.
- *               5. Sending 10 items to user over ethernet: 3 voltage measurements, 1 current meausrement, and 6 temperature measurements.
- *                  Note: may need additional data to be sent over (possibly).
- *               6. Get rid of the current and voltage thresh in the class objects, just hard code in the main. 
- */
-
 /*Libraries*/
 #include <DS18B20.h>
 #include <MCP3428.h>
@@ -77,6 +68,7 @@ const int ledOutputEnable_pin = 6;
  EthernetClient client;
  const int CAPACITY = 200;                            //Length of the JSON object.
 
+// ----------------------------------------- //
 
 void setup() {
   Serial.begin(9600);
@@ -90,13 +82,8 @@ void setup() {
   digitalWrite(relay_1, LOW);
   
   /*Initial Test and check of all components*/
-//  Serial.println("Initializing Temperature Sensors...");
   while(!ds18b20.test());
-//  delay(1000);
-//  Serial.println("Initializing Voltage and Current Sensor...");
   while(!mcp3428.test());
-//  delay(1000);
-//  Serial.println("Initializing Ethernet...");
   setEthernet(); // Write a test function for network connectivity. 
   Serial.println("All components initialized successfully.");
   delay(1000);
@@ -108,7 +95,7 @@ void setup() {
 //  setVoltThreshold();
 //  setCurrentThreshold();
 //  Serial.println("All Thresholds Set.");
-  Serial.println("Beginning Systems Operations");
+  Serial.println("Beginning System Operations");
   delay(1000);
 }
 
@@ -160,6 +147,7 @@ void loop() {
 //    Serial.print("Relay State: ");
 //    Serial.println(relayConfig,DEC);
 //  }
+
   if(client){
     int len = client.available();
     if (len > 0) {
@@ -182,22 +170,21 @@ void loop() {
   
     Ethernet.maintain();
   }
-//  delay(3000);
   Ethernet.maintain();
 }
 
-void setEthernet(){
-  
+void setEthernet(){  
   Serial.println("Trying to get an IP address using DHCP");
   int ethernetVal = Ethernet.begin(mac);
-//85
-
 
   Serial.print("My IP address: ");
   Serial.println(Ethernet.localIP());
   
   server.begin();
 }
+
+// ----------------------------------------- //
+
 //void setTempThreshold(){
 //  Serial.print("Enter MAX temperature threshold (-45.0 to 85.0): \n");
 //  while(!Serial.available());
@@ -220,77 +207,6 @@ void setEthernet(){
 //  delay(1000);
 //}
 
-void checkTemp(){
-  tempPtr = ds18b20.getTempC();
-  for(int i = 0; i<ds18b20.getNumberOfDevices();i++){
-    tempArray[i] = *(tempPtr+i);
-    if(*(tempPtr+i) <= TEMP_READ_FAIL || *(tempPtr+i) >= tempThreshold){
-      setRelays(LOW, LOW);
-      if(*(tempPtr+i) <= TEMP_READ_FAIL){
-        setRelays(LOW,LOW);
-        Serial.println("Warning: Check Temperature Sensors");
-      }
-      else{
-        setRelays(LOW,LOW);
-        Serial.println("Warning: Solar Panel Temperature is Critical");
-      }
-    }
-    else{
-//      Serial.print("Device: ");
-//      Serial.println(i, DEC);
-//      Serial.print("Temp C: ");
-//      Serial.println(*(tempPtr+i));
-//      delay(1000);
-    }
- }
-   if (client) {
-   // Create JSON Object
-   StaticJsonDocument<CAPACITY> sendObj;
-   sendObj["V1"] = channelArray[CHANNEL_ONE-1];
-   sendObj["V2"] = channelArray[CHANNEL_TWO-1];
-   sendObj["V3"] = channelArray[CHANNEL_THREE-1];
-   sendObj["C1"] = channelArray[CHANNEL_FOUR-1];
-   sendObj["T1"] = tempArray[0];
-   sendObj["T2"] = tempArray[1];
-   sendObj["T3"] = tempArray[2];
-   sendObj["T4"] = tempArray[3];
-   sendObj["T5"] = tempArray[4];
-   sendObj["T6"] = tempArray[5];
-  
-   // Serialize JSON Object to char array
-   char sendValue[CAPACITY];
-   serializeJson(sendObj, sendValue);
-    
-   // Write JSON Object
-   server.write(sendValue);
-   Serial.print(sendValue);
-   Serial.print("\n");
-   Ethernet.maintain();
-  }
-}
-
-bool setRelays(int relayZero, int relayOne){
-  bool ret = true;
-  // Check relay configuration state. 
-  if( relayZero == 0 && relayOne == 0){relayConfig = STATE_ZERO;}
-  else if( relayZero == 0 && relayOne == 1){relayConfig = STATE_ONE;}
-  else if( relayZero == 1 && relayOne == 0){relayConfig = STATE_TWO;}
-  else if( relayZero == 1 && relayOne == 1){relayConfig = STATE_THREE;}
-  else{ 
-    //Invalid relay configuration. Disconnect for safety.
-    digitalWrite(relay_0, LOW);
-    digitalWrite(relay_1, LOW);
-    relayConfig = STATE_ZERO;
-    ret = false;
-  }
-  // Set the relays.
-  if(ret){
-  digitalWrite(relay_0, relayZero);
-  digitalWrite(relay_1, relayOne);
-  }
-  return ret;
-}
-//
 //void setVoltThreshold(){
 //  Serial.print("Enter MAX Voltage threshold (0 to 72.9): ");
 //  while(!Serial.available());
@@ -312,6 +228,7 @@ bool setRelays(int relayZero, int relayOne){
 //  Serial.println(voltThreshold, DEC);
 //  delay(1000);
 //}
+
 //void setCurrentThreshold(){
 //  Serial.print("Enter MAX Current threshold (0 to 5.83): ");
 //  while(!Serial.available());
@@ -333,6 +250,9 @@ bool setRelays(int relayZero, int relayOne){
 //  Serial.println(currentThreshold, DEC);
 //  delay(1000);
 //}
+
+// ----------------------------------------- //
+
 void flushRecieve(){
   while(Serial.available()){
     Serial.read();
@@ -354,7 +274,6 @@ float getChannel(int channel){
       break;
     case CHANNEL_FOUR:
       ret_val = 5 * (mcp3428.readADC(CHANNEL_FOUR) * 2.5 - 0.5);
-//      ret_val = mcp3428.readADC(CHANNEL_FOUR);
       break;
     default:
       break;
@@ -363,13 +282,14 @@ float getChannel(int channel){
   
 }
 
+// ----------------------------------------- //
+
 void checkVoltageCurrent(){
 
   for(int channel = 1; channel<=NUM_CHANNELS; channel++){
     if(!mcp3428.test()){ //Always have to check when entering a for loop.
     setRelays(LOW,LOW);
     Serial.println("Warning: voltage and test communication failure");
-//    delay(5000);
     }
     channelArray[channel-1] = getChannel(channel);
     if(channel<4){
@@ -378,7 +298,6 @@ void checkVoltageCurrent(){
         Serial.println(mcp3428.getVoltThreshold());
         Serial.println(channelArray[channel-1]);
         Serial.println("Warning: Overvoltage");
-//        delay(5000);
       }
     }
     else{
@@ -387,10 +306,10 @@ void checkVoltageCurrent(){
         Serial.println(mcp3428.getCurrentThreshold());
         Serial.println(channelArray[channel-1]);
         Serial.println("Warning: Overcurrent");
-//        delay(5000);
       }
     }
   }
+  
 //  for(int channel =1; channel<=NUM_CHANNELS; channel++){
 //    Serial.print("Channel: ");
 //    Serial.print(channel, DEC);
@@ -398,30 +317,104 @@ void checkVoltageCurrent(){
 //    Serial.println(channelArray[channel-1], DEC);
 //  }
 //  delay(1000);
+
   if (client) {
-   // Create JSON Object
-   StaticJsonDocument<CAPACITY> sendObj;
-   sendObj["V1"] = channelArray[CHANNEL_ONE-1];
-   sendObj["V2"] = channelArray[CHANNEL_TWO-1];
-   sendObj["V3"] = channelArray[CHANNEL_THREE-1];
-   sendObj["C1"] = channelArray[CHANNEL_FOUR-1];
-   sendObj["T1"] = tempArray[0];
-   sendObj["T2"] = tempArray[1];
-   sendObj["T3"] = tempArray[2];
-   sendObj["T4"] = tempArray[3];
-   sendObj["T5"] = tempArray[4];
-   sendObj["T6"] = tempArray[5];
-  
-   // Serialize JSON Object to char array
-   char sendValue[CAPACITY];
-   serializeJson(sendObj, sendValue);
+    // Create JSON Object
+    StaticJsonDocument<CAPACITY> sendObj;
+    sendObj["V1"] = channelArray[CHANNEL_ONE-1];
+    sendObj["V2"] = channelArray[CHANNEL_TWO-1];
+    sendObj["V3"] = channelArray[CHANNEL_THREE-1];
+    sendObj["C1"] = channelArray[CHANNEL_FOUR-1];
+    sendObj["T1"] = tempArray[0];
+    sendObj["T2"] = tempArray[1];
+    sendObj["T3"] = tempArray[2];
+    sendObj["T4"] = tempArray[3];
+    sendObj["T5"] = tempArray[4];
+    sendObj["T6"] = tempArray[5];
     
-   // Write JSON Object
-   server.write(sendValue);
-   Serial.print(sendValue);
-   Serial.print("\n");
-   Ethernet.maintain();
+    // Serialize JSON Object to char array
+    char sendValue[CAPACITY];
+    serializeJson(sendObj, sendValue);
+    
+    // Write JSON Object
+    server.write(sendValue);
+    Serial.print(sendValue);
+    Serial.print("\n");
+    Ethernet.maintain();
   }
+}
+
+void checkTemp(){
+  tempPtr = ds18b20.getTempC();
+  for(int i = 0; i<ds18b20.getNumberOfDevices();i++){
+    tempArray[i] = *(tempPtr+i);
+    if(*(tempPtr+i) <= TEMP_READ_FAIL || *(tempPtr+i) >= tempThreshold){
+      setRelays(LOW, LOW);
+      if(*(tempPtr+i) <= TEMP_READ_FAIL){
+        setRelays(LOW,LOW);
+        Serial.println("Warning: Check Temperature Sensors");
+      }
+      else{
+        setRelays(LOW,LOW);
+        Serial.println("Warning: Solar Panel Temperature is Critical");
+      }
+    }
+//    else{
+//      Serial.print("Device: ");
+//      Serial.println(i, DEC);
+//      Serial.print("Temp C: ");
+//      Serial.println(*(tempPtr+i));
+//      delay(1000);
+//    }
+ }
+   if (client) {
+     // Create JSON Object
+     StaticJsonDocument<CAPACITY> sendObj;
+     sendObj["V1"] = channelArray[CHANNEL_ONE-1];
+     sendObj["V2"] = channelArray[CHANNEL_TWO-1];
+     sendObj["V3"] = channelArray[CHANNEL_THREE-1];
+     sendObj["C1"] = channelArray[CHANNEL_FOUR-1];
+     sendObj["T1"] = tempArray[0];
+     sendObj["T2"] = tempArray[1];
+     sendObj["T3"] = tempArray[2];
+     sendObj["T4"] = tempArray[3];
+     sendObj["T5"] = tempArray[4];
+     sendObj["T6"] = tempArray[5];
+    
+     // Serialize JSON Object to char array
+     char sendValue[CAPACITY];
+     serializeJson(sendObj, sendValue);
+      
+     // Write JSON Object
+     server.write(sendValue);
+     Serial.print(sendValue);
+     Serial.print("\n");
+     Ethernet.maintain();
+  }
+}
+
+// ----------------------------------------- //
+
+bool setRelays(int relayZero, int relayOne){
+  bool ret = true;
+  // Check relay configuration state. 
+  if( relayZero == 0 && relayOne == 0){relayConfig = STATE_ZERO;}
+  else if( relayZero == 0 && relayOne == 1){relayConfig = STATE_ONE;}
+  else if( relayZero == 1 && relayOne == 0){relayConfig = STATE_TWO;}
+  else if( relayZero == 1 && relayOne == 1){relayConfig = STATE_THREE;}
+  else{ 
+    //Invalid relay configuration. Disconnect for safety.
+    digitalWrite(relay_0, LOW);
+    digitalWrite(relay_1, LOW);
+    relayConfig = STATE_ZERO;
+    ret = false;
+  }
+  // Set the relays.
+  if(ret){
+  digitalWrite(relay_0, relayZero);
+  digitalWrite(relay_1, relayOne);
+  }
+  return ret;
 }
 
 bool userSetRelays(int relayState){
@@ -445,6 +438,5 @@ bool userSetRelays(int relayState){
       ret = false;
       break;
   }
-
   return ret;
 }
