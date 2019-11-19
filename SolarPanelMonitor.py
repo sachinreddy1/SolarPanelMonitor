@@ -116,6 +116,7 @@ class Application:
 	def thresholdInputting(self, voltageValue, currentValue, temperatureValue, i):
 		if len(self.c.connections) == 0:
 			return
+
 		self.c.connections[i].voltageValue = voltageValue
 		self.c.connections[i].currentValue = currentValue
 		self.c.connections[i].temperatureValue = temperatureValue

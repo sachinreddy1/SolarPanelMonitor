@@ -5,6 +5,10 @@ from PIL import Image, ImageTk
 HEIGHT = 500
 WIDTH = 600
 
+DEFAULT_VOLTAGE_THRES = 36.0
+DEFAULT_CURRENT_THRES = 0.75
+DEFAULT_TEMPERATURE_THRES = 27.0
+
 LIGHT_GRAY = '#ababab'
 MID_GRAY_1 = '#464646'
 MID_GRAY_2 = '#383735'
@@ -53,18 +57,38 @@ class Monitor:
 		# Voltage Threshold Label and Entry
 		voltageEntryThreshold = tk.Label(self.dataFrame, text="Voltage: ", bg=LIGHT_GRAY)
 		voltageEntryThreshold.place(relx=0, rely=0.1, relwidth=0.3, relheight=0.1)
-		voltageEntry = tk.Entry(self.dataFrame, font=40)
-		voltageEntry.place(relx=0.3, rely=0.1, relwidth=0.2, relheight=0.1)
+		self.voltageEntry = tk.Entry(self.dataFrame, font=40)
+
+		self.voltageEntry.insert(0, DEFAULT_VOLTAGE_THRES)
+		self.voltageEntry.bind('<FocusIn>', lambda event, i=0: self.on_entry_click(event, i))
+		self.voltageEntry.bind('<FocusOut>', lambda event, i=0: self.on_focusout(event, i))
+		self.voltageEntry.config(fg = 'grey')
+
+		self.voltageEntry.place(relx=0.3, rely=0.1, relwidth=0.2, relheight=0.1)
+
 		# Current Threshold Label and Entry
 		currentEntryThreshold = tk.Label(self.dataFrame, text="Current: ", bg=LIGHT_GRAY)
 		currentEntryThreshold.place(relx=0, rely=0.2, relwidth=0.3, relheight=0.1)
-		currentEntry = tk.Entry(self.dataFrame, font=40)
-		currentEntry.place(relx=0.3, rely=0.2, relwidth=0.2, relheight=0.1)
+		self.currentEntry = tk.Entry(self.dataFrame, font=40)
+
+		self.currentEntry.insert(0, DEFAULT_CURRENT_THRES)
+		self.currentEntry.bind('<FocusIn>', lambda event, i=1: self.on_entry_click(event, i))
+		self.currentEntry.bind('<FocusOut>', lambda event, i=1: self.on_focusout(event, i))
+		self.currentEntry.config(fg = 'grey')
+
+		self.currentEntry.place(relx=0.3, rely=0.2, relwidth=0.2, relheight=0.1)
+
 		# Temperature Threshold Label and Entry
 		temperatureEntryThreshold = tk.Label(self.dataFrame, text="Temperature: ", bg=LIGHT_GRAY)
 		temperatureEntryThreshold.place(relx=0, rely=0.3, relwidth=0.3, relheight=0.1)
-		temperatureEntry = tk.Entry(self.dataFrame, font=40)
-		temperatureEntry.place(relx=0.3, rely=0.3, relwidth=0.2, relheight=0.1)
+		self.temperatureEntry = tk.Entry(self.dataFrame, font=40)
+
+		self.temperatureEntry.insert(0, DEFAULT_TEMPERATURE_THRES)
+		self.temperatureEntry.bind('<FocusIn>', lambda event, i=2: self.on_entry_click(event, i))
+		self.temperatureEntry.bind('<FocusOut>', lambda event, i=2: self.on_focusout(event, i))
+		self.temperatureEntry.config(fg = 'grey')
+
+		self.temperatureEntry.place(relx=0.3, rely=0.3, relwidth=0.2, relheight=0.1)
 
 		# Output Configuration
 		var1 = tk.IntVar()
@@ -83,7 +107,7 @@ class Monitor:
 		self.vars = [var1, var2, var3, var4]
 
 		# Entry button submission
-		thresholdEntryButton = tk.Button(self.dataFrame, text="OK", font=40, command=lambda: self.application.thresholdInputting(voltageEntry.get(), currentEntry.get(), temperatureEntry.get(), self.selected))
+		thresholdEntryButton = tk.Button(self.dataFrame, text="OK", font=40, command=lambda: self.application.thresholdInputting(self.voltageEntry.get(), self.currentEntry.get(), self.temperatureEntry.get(), self.selected))
 		thresholdEntryButton.place(relx=0.5, rely=0.15, relwidth=0.15, relheight=0.1)
 
 		# OFF/ON Button
@@ -130,6 +154,23 @@ class Monitor:
 
 	# ------------- #
 
+	def switchConnections(self, i):
+		# Change checkbox
+		self.updateCheckbox(self.application.c.connections[i].configSwitch)
+
+		# Change threshold values
+		self.voltageEntry.delete(0, "end")
+		self.voltageEntry.insert(0, self.application.c.connections[i].voltageValue)
+		self.voltageEntry.config(fg = 'grey')
+
+		self.currentEntry.delete(0, "end")
+		self.currentEntry.insert(0, self.application.c.connections[i].currentValue)
+		self.currentEntry.config(fg = 'grey')
+
+		self.temperatureEntry.delete(0, "end")
+		self.temperatureEntry.insert(0, self.application.c.connections[i].temperatureValue)
+		self.temperatureEntry.config(fg = 'grey')
+
 	def updateCheckbox(self, i):
 		for var in self.vars:
 			var.set(0)
@@ -145,6 +186,7 @@ class Monitor:
 			self.clearWidgetColors()
 			color = MID_GRAY_1	
 			self.selected = index
+			self.switchConnections(self.selected)
 
 		for i in self.widgetFrames[index]: i.configure(bg=color)
 
@@ -153,6 +195,7 @@ class Monitor:
 			self.clearWidgetColors()
 			color = MID_GRAY_1	
 			self.selected = index
+			self.switchConnections(self.selected)
 
 		if event.type is '7':	# Entered
 			color = MID_GRAY_1 if self.selected == index else MID_GRAY_3
@@ -166,6 +209,50 @@ class Monitor:
 		for i in self.widgetFrames:
 			for j in i:
 				j.configure(bg=DARK_GRAY)
+
+	# ------------- #
+
+	def on_entry_click(self, event, i):
+		if i == 0:
+			self.voltageEntry.delete(0, "end") # delete all the text in the entry
+			self.voltageEntry.insert(0, '') #Insert blank for user input
+			self.voltageEntry.config(fg = 'black')
+		if i == 1:
+			self.currentEntry.delete(0, "end") # delete all the text in the entry
+			self.currentEntry.insert(0, '') #Insert blank for user input
+			self.currentEntry.config(fg = 'black')
+		if i == 2:
+			self.temperatureEntry.delete(0, "end") # delete all the text in the entry
+			self.temperatureEntry.insert(0, '') #Insert blank for user input
+			self.temperatureEntry.config(fg = 'black')
+
+	def on_focusout(self, event, i):
+		if len(self.application.c.connections) == 0:
+			if i == 0:
+				if self.voltageEntry.get() == '':
+					self.voltageEntry.insert(0, DEFAULT_VOLTAGE_THRES)
+					self.voltageEntry.config(fg = 'grey')
+			if i == 1:
+				if self.currentEntry.get() == '':
+					self.currentEntry.insert(0, DEFAULT_CURRENT_THRES)
+					self.currentEntry.config(fg = 'grey')
+			if i == 2:
+				if self.temperatureEntry.get() == '':
+					self.temperatureEntry.insert(0, DEFAULT_TEMPERATURE_THRES)
+					self.temperatureEntry.config(fg = 'grey')
+		else:
+			if i == 0:
+			    if self.voltageEntry.get() == '':
+					self.voltageEntry.insert(0, self.application.c.connections[self.selected].voltageValue)
+					self.voltageEntry.config(fg = 'grey')
+			if i == 1:
+				if self.currentEntry.get() == '':
+					self.currentEntry.insert(0, self.application.c.connections[self.selected].currentValue)
+					self.currentEntry.config(fg = 'grey')
+			if i == 2:
+				if self.temperatureEntry.get() == '':
+					self.temperatureEntry.insert(0, self.application.c.connections[self.selected].temperatureValue)
+					self.temperatureEntry.config(fg = 'grey')
 
 	# ------------- #
 
