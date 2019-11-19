@@ -100,7 +100,6 @@ class Application:
 					data['C'] = i.currentValue
 					data['T'] = i.temperatureValue
 					data['S'] = i.configSwitch
-					data['P'] = i.power
 					i.socket.send(json.dumps(data))
 					# RECEIVE
 					self.lastData = i.socket.recv(BUFFER_SIZE)
@@ -125,16 +124,6 @@ class Application:
 		if len(self.c.connections) == 0:
 			return
 		self.c.connections[connection].configSwitch = i
-
-	def powerInputting(self, i):
-		if len(self.c.connections) == 0:
-			return
-		if self.c.connections[i].power == 'ON':
-			self.c.connections[i].power = 'OFF'
-			self.monitor.togglePowerButton['text'] = 'ON'	#
-		else:
-			self.c.connections[i].power = 'ON'
-			self.monitor.togglePowerButton['text'] = 'OFF'	#
 
 	def formatSelect(self, input):
 		ret = ""

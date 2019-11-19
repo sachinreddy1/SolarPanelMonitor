@@ -110,10 +110,6 @@ class Monitor:
 		thresholdEntryButton = tk.Button(self.dataFrame, text="OK", font=40, command=lambda: self.application.thresholdInputting(self.voltageEntry.get(), self.currentEntry.get(), self.temperatureEntry.get(), self.selected))
 		thresholdEntryButton.place(relx=0.5, rely=0.15, relwidth=0.15, relheight=0.1)
 
-		# OFF/ON Button
-		self.togglePowerButton = tk.Button(self.dataFrame, text="OFF", font=40, command=lambda: self.application.powerInputting(self.selected))
-		self.togglePowerButton.place(relx=0.85, rely=0, relwidth=0.15, relheight=0.1)
-
 		# SYNC Label
 		self.syncFrame = tk.Frame(self.connFrame, bg=MID_GRAY_1)
 		self.syncFrame.place(relx=0.5, rely=0.92, relwidth=1.0, relheight=0.08, anchor='n')
