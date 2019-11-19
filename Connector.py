@@ -6,6 +6,7 @@ IP = "192.168.1."
 # IP = "192.168.0."
 TCP_PORT = 23
 NUM_CONNECTIONS = 10
+TIMEOUT = 5
 
 class Connector:
    def __init__ (self):
@@ -24,7 +25,7 @@ class Connector:
    def scan(self, i):
       address = IP + str(i) 
       s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-      s.settimeout(5)
+      s.settimeout(TIMEOUT)
       try:
          s.connect((address, TCP_PORT))
          self.connections.append(Connection(s, address, TCP_PORT, True)) 
