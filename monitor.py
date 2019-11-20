@@ -110,6 +110,10 @@ class Monitor:
 		thresholdEntryButton = tk.Button(self.dataFrame, text="OK", font=40, command=lambda: self.application.thresholdInputting(self.voltageEntry.get(), self.currentEntry.get(), self.temperatureEntry.get(), self.selected))
 		thresholdEntryButton.place(relx=0.5, rely=0.15, relwidth=0.15, relheight=0.1)
 
+		# Manual Switch Button
+		self.toggleManualSwitchButton = tk.Button(self.dataFrame, text="ON", font=40, command=lambda: self.application.manualSwitchInputting(self.selected))
+		self.toggleManualSwitchButton.place(relx=0.85, rely=0, relwidth=0.15, relheight=0.1)
+
 		# SYNC Label
 		self.syncFrame = tk.Frame(self.connFrame, bg=MID_GRAY_1)
 		self.syncFrame.place(relx=0.5, rely=0.92, relwidth=1.0, relheight=0.08, anchor='n')
@@ -257,10 +261,11 @@ class Monitor:
 			for j in i:
 				j.destroy()
 
-	def run(self):
+	def runSetup(self):
 		self.setup()
 		self.updateCheckbox(0)
 
+	def run(self):
 		#TESTING
 		# sync_button = Image.open('images/sync.png')
 		# sync_image_for_button = ImageTk.PhotoImage(sync_button)

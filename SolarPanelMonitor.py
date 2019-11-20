@@ -11,6 +11,8 @@ BUFFER_SIZE = 1024
 class Application:
 	def __init__ (self):
 		self.lastData = None
+		self.lastIP = None
+
 		self.command = None
 		self.monitor = None
 		self.c = Connector()
@@ -26,6 +28,7 @@ class Application:
 		if cursor.fetchone()[0] == 0:
 			cursor.execute("""CREATE TABLE voltages (
 			timeRecorded integer,
+			ip text,
 			voltage_1 real,
 			voltage_2 real,
 			voltage_3 real,
@@ -42,9 +45,16 @@ class Application:
 			if self.lastData:
 				try:
 					packet = json.loads(self.lastData)
-					cursor.execute("INSERT INTO voltages VALUES (:timeRecorded, :voltage_1, :voltage_2, :voltage_3, :current_1, :temperature_1, :temperature_2, :temperature_3, :temperature_4, :temperature_5, :temperature_6)", 
+
+					# Switch relay configuration if threshold reached
+					currConnection = self.c.findConnection(self.lastIP)
+					if currConnection != -1 and self.c.connections[currConnection].configSwitch != packet["S"] and packet["X"] != 0:
+						self.monitor.updateCheckbox(packet["S"])
+
+					cursor.execute("INSERT INTO voltages VALUES (:timeRecorded, :ip, :voltage_1, :voltage_2, :voltage_3, :current_1, :temperature_1, :temperature_2, :temperature_3, :temperature_4, :temperature_5, :temperature_6)", 
 					{
 					'timeRecorded': time.time(), 
+					'ip': self.lastIP,
 					'voltage_1': packet["V1"], 
 					'voltage_2': packet["V2"], 
 					'voltage_3': packet["V3"], 
@@ -58,6 +68,7 @@ class Application:
 					})
 					self.conn.commit()
 					self.lastData = None
+					self.lastIP = None
 				except ValueError as e:
 					pass
 
@@ -100,9 +111,11 @@ class Application:
 					data['C'] = i.currentValue
 					data['T'] = i.temperatureValue
 					data['S'] = i.configSwitch
+					data['M'] = i.manualSwitch
 					i.socket.send(json.dumps(data))
 					# RECEIVE
 					self.lastData = i.socket.recv(BUFFER_SIZE)
+					self.lastIP = i.ip
 					
 			if self.command == 'quit':
 				return
@@ -125,6 +138,17 @@ class Application:
 			return
 		self.c.connections[connection].configSwitch = i
 
+	def manualSwitchInputting(self, i):
+		if len(self.c.connections) == 0:
+			return
+
+		if self.c.connections[i].manualSwitch == 0:
+			self.c.connections[i].manualSwitch = 1
+			self.monitor.toggleManualSwitchButton['text'] = 'OFF'	#
+		else:
+			self.c.connections[i].manualSwitch = 0
+			self.monitor.toggleManualSwitchButton['text'] = 'ON'	#
+
 	def formatSelect(self, input):
 		ret = ""
 		for i in input:
@@ -136,9 +160,10 @@ class Application:
 	def run(self, monitor):
 		t1 = threading.Thread(target=self.receiver, args=())
 		t2 = threading.Thread(target=self.commands, args=())
+		self.monitor = monitor
+		self.monitor.runSetup()
 		t1.start()
 		t2.start()
-		self.monitor = monitor
 		self.monitor.run()
 		t1.join()
 		t2.join()

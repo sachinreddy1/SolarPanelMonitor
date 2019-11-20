@@ -3,8 +3,8 @@
 #include <ArduinoJson.h>
 
 byte mac[] = {
-//  0x00, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE
-  0x00, 0xDE, 0xAD, 0xBE, 0xEF, 0xEE
+  0x00, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE
+//  0x00, 0xDE, 0xAD, 0xBE, 0xEF, 0xEE
 };
 IPAddress ip(192, 168, 1, 177);
 IPAddress myDns(192, 168, 1, 1);
@@ -74,24 +74,16 @@ void loop() {
       float currentVal = receiveObj["C"];
       float temperatureVal = receiveObj["T"];
       int switchVal = receiveObj["S"];
-      String powerVal = receiveObj["P"];
 
       // Printing values individually
       Serial.print("Voltage Threshold: ");
-      Serial.print(voltageVal);
-      Serial.print("\n");
+      Serial.println(voltageVal);
       Serial.print("Current Threshold: ");
-      Serial.print(currentVal);
-      Serial.print("\n");
+      Serial.println(currentVal);
       Serial.print("Temperature Threshold: ");
-      Serial.print(temperatureVal);
-      Serial.print("\n");
+      Serial.println(temperatureVal);
       Serial.print("Switch Configuration: ");
-      Serial.print(switchVal);
-      Serial.print("\n");
-      Serial.print("Power Value: ");
-      Serial.print(powerVal);
-      Serial.print("\n");
+      Serial.println(switchVal);
     }
     
     // Wait 3 seconds

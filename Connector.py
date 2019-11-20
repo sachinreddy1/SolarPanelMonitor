@@ -50,6 +50,12 @@ class Connector:
 
    # ------------- #
 
+   def findConnection(self, ip):
+      for idx, i in enumerate(self.connections):
+         if i.ip == ip:
+            return idx
+      return -1
+
    def clear(self):
       for i in self.connections:
          i.socket.close()
