@@ -42,7 +42,7 @@ class Application:
 			)""")	
 
 		while True:
-			if self.lastData:
+			if self.lastData and self.command != 'sync' and self.command != 'quit':
 				try:
 					packet = json.loads(self.lastData)
 
@@ -93,6 +93,8 @@ class Application:
 					self.monitor.updateWidgets()
 					self.c.connect()
 					self.monitor.updateWidgets()
+					for i in range(0, len(self.c.connections)):
+						self.monitor.updateCheckbox(i)
 
 				self.command = None
 
@@ -114,8 +116,11 @@ class Application:
 					data['M'] = i.manualSwitch
 					i.socket.send(json.dumps(data))
 					# RECEIVE
-					self.lastData = i.socket.recv(BUFFER_SIZE)
-					self.lastIP = i.ip
+					try:
+						self.lastData = i.socket.recv(BUFFER_SIZE)
+						self.lastIP = i.ip
+					except:
+						pass
 					
 			if self.command == 'quit':
 				return

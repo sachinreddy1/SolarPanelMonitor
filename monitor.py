@@ -260,6 +260,9 @@ class Monitor:
 		for i in self.widgetFrames:
 			for j in i:
 				j.destroy()
+				
+		self.widgetFrames = []
+		self.selected = 0
 
 	def runSetup(self):
 		self.setup()

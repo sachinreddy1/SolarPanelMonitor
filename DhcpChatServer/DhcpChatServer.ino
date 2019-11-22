@@ -3,31 +3,22 @@
 #include <ArduinoJson.h>
 
 byte mac[] = {
-  0x00, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE
-//  0x00, 0xDE, 0xAD, 0xBE, 0xEF, 0xEE
+//  0x00, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE
+  0x00, 0xDE, 0xAD, 0xBE, 0xEF, 0xEE
 };
-IPAddress ip(192, 168, 1, 177);
-IPAddress myDns(192, 168, 1, 1);
-IPAddress gateway(192, 168, 1, 1);
-IPAddress subnet(255, 255, 0, 0);
 
 EthernetServer server(23);
-
 const int CAPACITY = 200;
+
+int relayConfig = 0;
+int manualSwitch = 0;
 
 void setup() {
   Serial.begin(9600);
-
   Serial.println("Trying to get an IP address using DHCP");
   int ethernetVal = Ethernet.begin(mac);
-  
-  if (ethernetVal == 0) {
-    Ethernet.begin(mac, ip, myDns, gateway, subnet);
-  }
-  
   Serial.print("My IP address: ");
   Serial.println(Ethernet.localIP());
-  
   server.begin();
 }
 
@@ -47,6 +38,8 @@ void loop() {
     sendObj["T4"] = 3.0;
     sendObj["T5"] = 4.0;
     sendObj["T6"] = 5.0;
+    sendObj["S"] = relayConfig;
+    sendObj["X"] = manualSwitch;
 
     // Serialize JSON Object to char array
     char sendValue[CAPACITY];
@@ -73,7 +66,8 @@ void loop() {
       float voltageVal = receiveObj["V"];
       float currentVal = receiveObj["C"];
       float temperatureVal = receiveObj["T"];
-      int switchVal = receiveObj["S"];
+      relayConfig = receiveObj["S"];
+      manualSwitch = receiveObj["M"];
 
       // Printing values individually
       Serial.print("Voltage Threshold: ");
@@ -83,7 +77,9 @@ void loop() {
       Serial.print("Temperature Threshold: ");
       Serial.println(temperatureVal);
       Serial.print("Switch Configuration: ");
-      Serial.println(switchVal);
+      Serial.println(relayConfig);
+      Serial.print("Manual Switch: ");
+      Serial.println(manualSwitch);
     }
     
     // Wait 3 seconds

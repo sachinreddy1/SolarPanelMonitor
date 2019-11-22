@@ -3,10 +3,11 @@ import threading
 from Connection import *
 
 IP = "192.168.1."
-# IP = "192.168.0."
+
 TCP_PORT = 23
+INIT_CONNECTION = 90
 NUM_CONNECTIONS = 10
-TIMEOUT = 5
+TIMEOUT = 10
 
 class Connector:
    def __init__ (self):
@@ -35,7 +36,10 @@ class Connector:
    # ------------- #
 
    def connect(self):
-      for i in range(0,NUM_CONNECTIONS): 
+      self.threads = []
+      self.connections = []
+      
+      for i in range(INIT_CONNECTION, INIT_CONNECTION + NUM_CONNECTIONS): 
          self.threads.append(threading.Thread(target=self.scan, args=(i,)))
       for t in self.threads:
          t.start()
