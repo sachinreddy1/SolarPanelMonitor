@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
+from Graph import *
+
+import matplotlib.animation as animation
 
 HEIGHT = 500
 WIDTH = 600
@@ -17,13 +20,12 @@ DARK_GRAY = '#262523'
 RED = '#cd5c5c'
 GREEN = '#32cd32'
 
-class Monitor:
+class Monitor():
 	def __init__ (self, application):
 		self.root = tk.Tk()
 		self.application = application
 		self.widgetFrames = []
 		self.selected = 0
-
 		self.vars = []
 
 	def setup(self):		
@@ -182,9 +184,8 @@ class Monitor:
 		self.application.configSwitchInputting(self.selected, i)
 
 	def labelInteraction(self, event, index):
-		print(event.type)
 		color = MID_GRAY_1
-		
+
 		if event.type is '4':	# Clicked
 			self.clearWidgetColors()
 			color = MID_GRAY_1	
@@ -194,8 +195,8 @@ class Monitor:
 		for i in self.widgetFrames[index]: i.configure(bg=color)
 
 	def frameInteraction(self, event, index, bg):
-		print(event.type)
 		color = MID_GRAY_1
+
 		if event.type is '4':	# Clicked
 			self.clearWidgetColors()
 			color = MID_GRAY_1	
@@ -289,5 +290,8 @@ class Monitor:
 		# self.syncButton.place(relx=0.5, rely=0.15, relwidth=0.15, relheight=0.1)
 		# self.syncButton.config(image=go_image_for_button) 
 
+		graph = Graph(self)
+		graph.run()
+		ani = animation.FuncAnimation(graph.f, graph.animate, interval=1000)
 		self.root.mainloop()
 
