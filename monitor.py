@@ -182,6 +182,9 @@ class Monitor:
 		self.application.configSwitchInputting(self.selected, i)
 
 	def labelInteraction(self, event, index):
+		print(event.type)
+		color = MID_GRAY_1
+		
 		if event.type is '4':	# Clicked
 			self.clearWidgetColors()
 			color = MID_GRAY_1	
@@ -191,6 +194,8 @@ class Monitor:
 		for i in self.widgetFrames[index]: i.configure(bg=color)
 
 	def frameInteraction(self, event, index, bg):
+		print(event.type)
+		color = MID_GRAY_1
 		if event.type is '4':	# Clicked
 			self.clearWidgetColors()
 			color = MID_GRAY_1	
@@ -242,7 +247,7 @@ class Monitor:
 					self.temperatureEntry.config(fg = 'grey')
 		else:
 			if i == 0:
-			    if self.voltageEntry.get() == '':
+				if self.voltageEntry.get() == '':
 					self.voltageEntry.insert(0, self.application.c.connections[self.selected].voltageValue)
 					self.voltageEntry.config(fg = 'grey')
 			if i == 1:
@@ -260,7 +265,7 @@ class Monitor:
 		for i in self.widgetFrames:
 			for j in i:
 				j.destroy()
-				
+
 		self.widgetFrames = []
 		self.selected = 0
 

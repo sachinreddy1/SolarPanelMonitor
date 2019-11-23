@@ -38,14 +38,14 @@ class Connector:
    def connect(self):
       self.threads = []
       self.connections = []
-      
+
       for i in range(INIT_CONNECTION, INIT_CONNECTION + NUM_CONNECTIONS): 
          self.threads.append(threading.Thread(target=self.scan, args=(i,)))
       for t in self.threads:
          t.start()
       for t in self.threads:
          t.join()
-      print "DONE."
+      print ("DONE.")
 
    # def connect(self):
    #    for i in range(1,NUM_CONNECTIONS): 
@@ -72,8 +72,8 @@ if __name__ == "__main__":
    c = Connector()
    c.connect()
 
-   print len(c.connections)
+   print (len(c.connections))
    for i in c.connections:
-      print i.ip
-      print i.connected
+      print (i.ip)
+      print (i.connected)
       i.socket.close()
