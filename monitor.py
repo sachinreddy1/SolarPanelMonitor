@@ -21,6 +21,7 @@ class Monitor():
 	def __init__ (self, application):
 		self.root = tk.Tk()
 		self.application = application
+		self.graph = None
 		self.widgetFrames = []
 		self.selected = 0
 		self.vars = []
@@ -124,6 +125,27 @@ class Monitor():
 		self.label = tk.Label(self.dataFrame, bg=LIGHT_GRAY)
 		self.label.place(relx=0, rely=0.4, relwidth=1, relheight=0.8)
 
+		v1Button = tk.Button(self.root, text="V1", font=40, command=lambda: self.graph.setField('voltage_1'))
+		v1Button.place(relx=0.45, rely=0.90, relwidth=0.05, relheight=0.05)
+		v2Button = tk.Button(self.root, text="V2", font=40, command=lambda: self.graph.setField('voltage_2'))
+		v2Button.place(relx=0.5, rely=0.90, relwidth=0.05, relheight=0.05)
+		v3Button = tk.Button(self.root, text="V3", font=40, command=lambda: self.graph.setField('voltage_3'))
+		v3Button.place(relx=0.55, rely=0.90, relwidth=0.05, relheight=0.05)
+		c1Button = tk.Button(self.root, text="C1", font=40, command=lambda: self.graph.setField('current_1'))
+		c1Button.place(relx=0.6, rely=0.90, relwidth=0.05, relheight=0.05)
+		t1Button = tk.Button(self.root, text="T1", font=40, command=lambda: self.graph.setField('temperature_1'))
+		t1Button.place(relx=0.65, rely=0.90, relwidth=0.05, relheight=0.05)
+		t2Button = tk.Button(self.root, text="T2", font=40, command=lambda: self.graph.setField('temperature_2'))
+		t2Button.place(relx=0.7, rely=0.90, relwidth=0.05, relheight=0.05)
+		t3Button = tk.Button(self.root, text="T3", font=40, command=lambda: self.graph.setField('temperature_3'))
+		t3Button.place(relx=0.75, rely=0.90, relwidth=0.05, relheight=0.05)
+		t4Button = tk.Button(self.root, text="T4", font=40, command=lambda: self.graph.setField('temperature_4'))
+		t4Button.place(relx=0.8, rely=0.90, relwidth=0.05, relheight=0.05)
+		t5Button = tk.Button(self.root, text="T5", font=40, command=lambda: self.graph.setField('temperature_5'))
+		t5Button.place(relx=0.85, rely=0.90, relwidth=0.05, relheight=0.05)
+		t6Button = tk.Button(self.root, text="T6", font=40, command=lambda: self.graph.setField('temperature_6'))
+		t6Button.place(relx=0.9, rely=0.90, relwidth=0.05, relheight=0.05)
+
 	def updateWidgets(self):
 		connLength = len(self.application.c.connections)
 
@@ -188,6 +210,7 @@ class Monitor():
 			color = MID_GRAY_1	
 			self.selected = index
 			self.switchConnections(self.selected)
+			self.graph.a.clear()
 
 		for i in self.widgetFrames[index]: i.configure(bg=color)
 
@@ -199,6 +222,7 @@ class Monitor():
 			color = MID_GRAY_1	
 			self.selected = index
 			self.switchConnections(self.selected)
+			self.graph.a.clear()
 
 		if event.type is '7':	# Entered
 			color = MID_GRAY_1 if self.selected == index else MID_GRAY_3
@@ -287,8 +311,8 @@ class Monitor():
 		# self.syncButton.place(relx=0.5, rely=0.15, relwidth=0.15, relheight=0.1)
 		# self.syncButton.config(image=go_image_for_button) 
 
-		graph = Graph(self)
-		graph.run()
-		ani = animation.FuncAnimation(graph.f, graph.animate, interval=1000)
+		self.graph = Graph(self)
+		self.graph.run()
+		ani = animation.FuncAnimation(self.graph.f, self.graph.animate, interval=1000)
 		self.root.mainloop()
 

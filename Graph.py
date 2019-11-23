@@ -14,9 +14,7 @@ class Graph:
 		self.monitor = monitor
 		self.f = Figure(figsize=(5,5), dpi=100)
 		self.a = self.f.add_subplot(111)
-
-		self.currentConnection = '192.168.1.97'
-		self.currentField = 'voltage_2'
+		self.field = 'voltage_1'
 
 	def run(self):
 		canvas = FigureCanvasTkAgg(self.f, self.monitor.dataFrame)
@@ -30,28 +28,36 @@ class Graph:
 		canvas._tkcanvas.place(relx=0, rely=0.4, relwidth=1, relheight=0.6)
 
 	def animate(self, i):
-		dataList = self.getData()
-		xList = []
-		yList = []
-		for i in dataList:
-			x = i[0]
-			y = i[1]
-			xList.append(x)
-			yList.append(y)
+		if len(self.monitor.application.c.connections) > 0:
+			dataList = self.getData(self.monitor.application.c.connections[self.monitor.selected].ip)
+			xList = []
+			yList = []
+			for i in dataList:
+				x = i[0]
+				y = i[1]
+				xList.append(x)
+				yList.append(y)
 
-		self.a.clear()
-		self.a.plot(xList, yList)
+			self.a.clear()
+			self.a.plot(xList, yList)
 
-	def getData(self):
+	def getData(self, ip):
 		conn = sqlite3.connect('solarPanel.db')
 		cursor = conn.cursor()	
-		cursor.execute("SELECT timeRecorded, ({0}) FROM voltages WHERE (:ip)".format(self.currentField),
+		cursor.execute("SELECT timeRecorded, ({0}) FROM voltages WHERE (:ip)".format(self.field),
 		{
-			'ip': self.currentConnection,
+			'ip': ip,
 		})
 		values = cursor.fetchall()
 		conn.commit()
 		return values
+
+	# ------------- #
+
+	def setField(self, field):
+		self.field = field
+
+	# ------------- #
 
 	def convertTime(self, seconds): 
 		seconds = seconds % (24 * 3600) 

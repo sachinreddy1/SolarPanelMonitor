@@ -120,7 +120,7 @@ class Application:
 						self.lastData = i.socket.recv(BUFFER_SIZE)
 						self.lastIP = i.ip
 					except:
-						pass
+						print "Timed out."
 					
 			if self.command == 'quit':
 				return
