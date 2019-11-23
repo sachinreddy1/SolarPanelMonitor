@@ -2,15 +2,12 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
 from Graph import *
+from Globs import *
 
 import matplotlib.animation as animation
 
 HEIGHT = 500
 WIDTH = 600
-
-DEFAULT_VOLTAGE_THRES = 36.0
-DEFAULT_CURRENT_THRES = 0.75
-DEFAULT_TEMPERATURE_THRES = 27.0
 
 LIGHT_GRAY = '#ababab'
 MID_GRAY_1 = '#464646'
@@ -220,16 +217,16 @@ class Monitor():
 
 	def on_entry_click(self, event, i):
 		if i == 0:
-			self.voltageEntry.delete(0, "end") # delete all the text in the entry
-			self.voltageEntry.insert(0, '') #Insert blank for user input
+			self.voltageEntry.delete(0, "end")
+			self.voltageEntry.insert(0, '')
 			self.voltageEntry.config(fg = 'black')
 		if i == 1:
-			self.currentEntry.delete(0, "end") # delete all the text in the entry
-			self.currentEntry.insert(0, '') #Insert blank for user input
+			self.currentEntry.delete(0, "end")
+			self.currentEntry.insert(0, '')
 			self.currentEntry.config(fg = 'black')
 		if i == 2:
-			self.temperatureEntry.delete(0, "end") # delete all the text in the entry
-			self.temperatureEntry.insert(0, '') #Insert blank for user input
+			self.temperatureEntry.delete(0, "end")
+			self.temperatureEntry.insert(0, '')
 			self.temperatureEntry.config(fg = 'black')
 
 	def on_focusout(self, event, i):

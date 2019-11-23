@@ -1,7 +1,4 @@
-# DEFAULT THRESHOLD VALUES
-DEFAULT_VOLTAGE_THRES = 36.0
-DEFAULT_CURRENT_THRES = 0.75
-DEFAULT_TEMPERATURE_THRES = 27.0
+from Globs import *
 
 class Connection:
 	def __init__ (self, socket, ip, port, connected):
