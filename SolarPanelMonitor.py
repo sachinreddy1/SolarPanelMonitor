@@ -79,15 +79,7 @@ class Application:
 					for i in self.c.connections:
 						i.socket.close()
 					return					
-				elif self.command == 'select':
-					cursor.execute("SELECT * FROM voltages")
-					ret = cursor.fetchall()
-					self.monitor.label['text'] = self.formatSelect(ret)
-					self.conn.commit()
-				elif self.command == 'delete':
-					cursor.execute("DELETE FROM voltages")
-					self.conn.commit()
-				elif self.command == 'sync':
+				if self.command == 'sync':
 					self.c.clear()
 					self.monitor.clearWidgets()
 					self.monitor.updateWidgets()
