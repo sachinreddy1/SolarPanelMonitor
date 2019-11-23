@@ -7,15 +7,16 @@ from matplotlib import style
 import tkinter as tk
 from tkinter import ttk
 import sqlite3
-
-LARGE_FONT= ("TkDefaultFont", 8)
 style.use("ggplot")
 
 class Graph:
 	def __init__ (self, monitor):
 		self.monitor = monitor
-		self.f = Figure(figsize=(2,2), dpi=100)
+		self.f = Figure(figsize=(5,5), dpi=100)
 		self.a = self.f.add_subplot(111)
+
+		self.currentConnection = '192.168.1.97'
+		self.currentField = 'voltage_2'
 
 	def run(self):
 		canvas = FigureCanvasTkAgg(self.f, self.monitor.dataFrame)
@@ -44,7 +45,10 @@ class Graph:
 	def getData(self):
 		conn = sqlite3.connect('solarPanel.db')
 		cursor = conn.cursor()	
-		cursor.execute("SELECT timeRecorded, voltage_1 FROM voltages")
+		cursor.execute("SELECT timeRecorded, ({0}) FROM voltages WHERE (:ip)".format(self.currentField),
+		{
+			'ip': self.currentConnection,
+		})
 		values = cursor.fetchall()
 		conn.commit()
 		return values
