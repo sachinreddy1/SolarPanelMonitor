@@ -11,8 +11,8 @@ from Globs import *
 style.use("ggplot")
 
 units = ["V", "V", "V", "A", "C", "C", "C", "C", "C", "C"]
-title = ["Voltage #1", "Voltage #2", "Voltage #3", "Current #1", "Temperature #1", "Temperature #2",
-		 "Temperature #3", "Temperature #4", "Temperature #5", "Temperature #6"]
+title = ["Voltage #1 vs. Time (Minutes)", "Voltage #2 vs. Time (Minutes)", "Voltage #3 vs. Time (Minutes)", "Current #1 vs. Time (Minutes)", "Temperature #1 vs. Time (Minutes)", "Temperature #2 vs. Time (Minutes)",
+		 "Temperature #3 vs. Time (Minutes)", "Temperature #4 vs. Time (Minutes)", "Temperature #5 vs. Time (Minutes)", "Temperature #6 vs. Time (Minutes)"]
 
 class Graph:
 	def __init__ (self, monitor):
@@ -41,7 +41,8 @@ class Graph:
 			for i in dataList:
 				x = i[0]
 				y = i[1]
-				xList.append(x)
+				# xList.append(x)
+				xList.append(self.convertTime(x))
 				yList.append(y)
 
 			self.a.clear()
@@ -95,11 +96,10 @@ class Graph:
 			return 0
 
 	# ------------- #
-
+	# Will need to update this
 	def convertTime(self, seconds): 
 		seconds = seconds % (24 * 3600) 
-		hour = seconds // 3600
 		seconds %= 3600
 		minutes = seconds // 60
 		seconds %= 60
-		return "%d:%02d:%02d" % (hour, minutes, seconds)
+		return minutes + (seconds/60)
