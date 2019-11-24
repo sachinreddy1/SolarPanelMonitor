@@ -7,7 +7,7 @@ from Globs import *
 import matplotlib.animation as animation
 
 HEIGHT = 500
-WIDTH = 600
+WIDTH = 675
 
 LIGHT_GRAY = '#ababab'
 MID_GRAY_1 = '#464646'
@@ -34,67 +34,88 @@ class Monitor():
 	# ------------- #
 
 	def setupFrames(self):
+		# Spacing
+		spacingFrame = tk.Frame(self.root, bg=MID_GRAY_2, width=25)
+		spacingFrame.pack(side="left")
+
 		# Connection frame
 		self.connFrame = tk.Frame(self.root, bg=DARK_GRAY)
-		self.connFrame.place(x=110, y=30, width=170, relheight=0.87, anchor='n')
+		self.connFrame.pack(side="left", fill="y", pady="25")
 
 		# Data frame
 		self.dataFrame = tk.Frame(self.root, bg=LIGHT_GRAY)
-		self.dataFrame.place(x=395, y=30, width=350, relheight=0.87, anchor='n')
+		self.dataFrame.pack(side="left", fill="both", padx="25", pady="25")
 
 	def setupThresholds(self):
+		thresholdFrame = tk.Frame(self.topFrame, bg=LIGHT_GRAY)
+		thresholdFrame.pack(side="left")
+
 		# Threshold Title
-		thresholdTitle = tk.Label(self.dataFrame, text="Thresholds:", bg=LIGHT_GRAY, font='TkDefaultFont 14 bold')
-		thresholdTitle.place(x=10, y=5, width=120, height=25)
+		thresholdFrame_1 = tk.Frame(thresholdFrame, bg=LIGHT_GRAY)
+		thresholdFrame_1.pack(side="top", padx=8, pady=2.5, fill="x")
+		thresholdTitle = tk.Label(thresholdFrame_1, text="Thresholds:", bg=LIGHT_GRAY, font='TkDefaultFont 14 bold')
+		thresholdTitle.pack(side="left")
 
 		# Voltage Threshold Label and Entry
-		voltageEntryThreshold = tk.Label(self.dataFrame, text="Voltage: ", bg=LIGHT_GRAY)
-		voltageEntryThreshold.place(x=10, y=35, width=60, height=25)
-		self.voltageEntry = tk.Entry(self.dataFrame, font=40)
+		thresholdFrame_2 = tk.Frame(thresholdFrame, bg=LIGHT_GRAY)
+		thresholdFrame_2.pack(side="top", padx=8, pady=2.5, fill="x")
+		voltageEntryThreshold = tk.Label(thresholdFrame_2, text="Voltage: ", bg=LIGHT_GRAY)
+		voltageEntryThreshold.pack(side="left")
+		self.voltageEntry = tk.Entry(thresholdFrame_2, font=40, width=5)
 		self.voltageEntry.insert(0, DEFAULT_VOLTAGE_THRES)
 		self.voltageEntry.bind('<FocusIn>', lambda event, i=0: self.on_entry_click(event, i))
 		self.voltageEntry.bind('<FocusOut>', lambda event, i=0: self.on_focusout(event, i))
 		self.voltageEntry.config(fg = 'grey')
-		self.voltageEntry.place(x=70, y=35, width=60, height=30)
+		self.voltageEntry.pack(side="left")
 
 		# Current Threshold Label and Entry
-		currentEntryThreshold = tk.Label(self.dataFrame, text="Current: ", bg=LIGHT_GRAY)
-		currentEntryThreshold.place(x=10, y=70, width=60, height=25)
-		self.currentEntry = tk.Entry(self.dataFrame, font=40)
+		thresholdFrame_3 = tk.Frame(thresholdFrame, bg=LIGHT_GRAY)
+		thresholdFrame_3.pack(side="top", padx=8, pady=2.5, fill="x")
+		currentEntryThreshold = tk.Label(thresholdFrame_3, text="Current: ", bg=LIGHT_GRAY)
+		currentEntryThreshold.pack(side="left")
+		self.currentEntry = tk.Entry(thresholdFrame_3, font=40, width=5)
 		self.currentEntry.insert(0, DEFAULT_CURRENT_THRES)
 		self.currentEntry.bind('<FocusIn>', lambda event, i=1: self.on_entry_click(event, i))
 		self.currentEntry.bind('<FocusOut>', lambda event, i=1: self.on_focusout(event, i))
 		self.currentEntry.config(fg = 'grey')
-		self.currentEntry.place(x=70, y=70, width=60, height=30)
+		self.currentEntry.pack(side="left")
 
 		# Temperature Threshold Label and Entry
-		temperatureEntryThreshold = tk.Label(self.dataFrame, text="Heat: ", bg=LIGHT_GRAY)
-		temperatureEntryThreshold.place(x=10, y=105, width=60, height=25)
-		self.temperatureEntry = tk.Entry(self.dataFrame, font=40)
+		thresholdFrame_4 = tk.Frame(thresholdFrame, bg=LIGHT_GRAY)
+		thresholdFrame_4.pack(side="top", padx=25, pady=2.5, fill="x")
+		temperatureEntryThreshold = tk.Label(thresholdFrame_4, text="Heat: ", bg=LIGHT_GRAY)
+		temperatureEntryThreshold.pack(side="left")
+		self.temperatureEntry = tk.Entry(thresholdFrame_4, font=40, width=5)
 		self.temperatureEntry.insert(0, DEFAULT_TEMPERATURE_THRES)
 		self.temperatureEntry.bind('<FocusIn>', lambda event, i=2: self.on_entry_click(event, i))
 		self.temperatureEntry.bind('<FocusOut>', lambda event, i=2: self.on_focusout(event, i))
 		self.temperatureEntry.config(fg = 'grey')
-		self.temperatureEntry.place(x=70, y=105, width=60, height=30)
+		self.temperatureEntry.pack(side="left")
 
-		# Entry button submission
-		thresholdEntryButton = tk.Button(self.dataFrame, text="OK", font=40, command=lambda: self.application.thresholdInputting(self.voltageEntry.get(), self.currentEntry.get(), self.temperatureEntry.get(), self.selected))
-		thresholdEntryButton.place(x=135, y=70, width=40, height=30)
+		thresholdEntryButton = tk.Button(thresholdFrame_3, text="OK", font=40, command=lambda: self.application.thresholdInputting(self.voltageEntry.get(), self.currentEntry.get(), self.temperatureEntry.get(), self.selected))
+		thresholdEntryButton.pack(side="left", padx=5)
 
 	def setupCheckboxes(self):
+		configFrame = tk.Frame(self.topFrame, bg=LIGHT_GRAY)
+		configFrame.pack(side="right", padx=10)
+
+		# Manual Switch Button
+		self.toggleManualSwitchButton = tk.Button(configFrame, text="ON", font=40, command=lambda: self.application.manualSwitchInputting(self.selected))
+		self.toggleManualSwitchButton.pack(side="top", pady=2.5)
+
 		# Output Configuration
 		var1 = tk.IntVar()
-		checkboxA = tk.Checkbutton(self.dataFrame, text="X", variable=var1, command=lambda: self.updateCheckbox(0))
-		checkboxA.place(relx=0.97, y=60, width=50, height=20, anchor=tk.E)
+		checkboxA = tk.Checkbutton(configFrame, text="X", variable=var1, command=lambda: self.updateCheckbox(0))
+		checkboxA.pack(side="top", pady=2.5)
 		var2 = tk.IntVar()
-		checkboxB = tk.Checkbutton(self.dataFrame, text="CD", variable=var2, command=lambda: self.updateCheckbox(1))
-		checkboxB.place(relx=0.97, y=85, width=50, height=20, anchor=tk.E)
+		checkboxB = tk.Checkbutton(configFrame, text="CD", variable=var2, command=lambda: self.updateCheckbox(1))
+		checkboxB.pack(side="top", pady=2.5)
 		var3 = tk.IntVar()
-		checkboxC = tk.Checkbutton(self.dataFrame, text="BC", variable=var3, command=lambda: self.updateCheckbox(2))
-		checkboxC.place(relx=0.97, y=110, width=50, height=20, anchor=tk.E)
+		checkboxC = tk.Checkbutton(configFrame, text="BC", variable=var3, command=lambda: self.updateCheckbox(2))
+		checkboxC.pack(side="top", pady=2.5)
 		var4 = tk.IntVar()
-		checkboxD = tk.Checkbutton(self.dataFrame, text="AD", variable=var4, command=lambda: self.updateCheckbox(3))
-		checkboxD.place(relx=0.97, y=135, width=50, height=20, anchor=tk.E)
+		checkboxD = tk.Checkbutton(configFrame, text="AD", variable=var4, command=lambda: self.updateCheckbox(3))
+		checkboxD.pack(side="top", pady=2.5)
 		self.vars = [var1, var2, var3, var4]
 
 	def setupSyncButton(self):
@@ -103,11 +124,11 @@ class Monitor():
 		self.syncFrame.pack(side="bottom", fill="x")
 		# SYNC Button
 		self.syncButton = tk.Button(self.syncFrame, text='sync', font=20, command=lambda: self.application.inputting('sync'))
-		self.syncButton.pack(side="left")
+		self.syncButton.pack(side="bottom", padx=40)
 
 	def setupQueryButtons(self):
-		queryButtonFrame = tk.Frame(self.dataFrame)
-		queryButtonFrame.pack(side="bottom", fill="x")
+		queryButtonFrame = tk.Frame(self.dataFrame, bg=LIGHT_GRAY)
+		queryButtonFrame.pack(side="bottom")
 		v1Button = tk.Button(queryButtonFrame, text="V1", font=30, command=lambda: self.graph.setField('voltage_1'))
 		v1Button.pack(side="left")
 		v2Button = tk.Button(queryButtonFrame, text="V2", font=30, command=lambda: self.graph.setField('voltage_2'))
@@ -131,14 +152,12 @@ class Monitor():
 
 	def setup(self):			
 		self.setupFrames()
+		self.topFrame = tk.Frame(self.dataFrame, bg=LIGHT_GRAY)
+		self.topFrame.pack(side="top", fill="x", pady=10)
 		self.setupThresholds()
 		self.setupCheckboxes()
 		self.setupSyncButton()
 		self.setupQueryButtons()
-
-		# Manual Switch Button
-		self.toggleManualSwitchButton = tk.Button(self.dataFrame, text="ON", font=40, command=lambda: self.application.manualSwitchInputting(self.selected))
-		self.toggleManualSwitchButton.place(relx=0.85, y=10, width=40, height=30)
 
 	def updateWidgets(self):
 		connLength = len(self.application.c.connections)
@@ -151,11 +170,11 @@ class Monitor():
 
 			# IP Label
 			ipLabel = tk.Label(widgetFrame, text='IP: ' + self.application.c.connections[i].ip, bg=BACKGROUND, font='TkDefaultFont 10')
-			ipLabel.pack(side="top", fill="x", pady=5)
+			ipLabel.pack(side="top", fill="x", padx=10, pady=5)
 			ipLabel.config(fg=LIGHT_GRAY)
 			# IP Status
 			ipStatus = tk.Label(widgetFrame, text="Status: Connected", bg=BACKGROUND, font='TkDefaultFont 10')
-			ipStatus.pack(side="bottom", fill="x", pady=5)
+			ipStatus.pack(side="bottom", fill="x", padx=10, pady=5)
 			ipStatus.config(fg=GREEN)
 
 			self.widgetFrames.append([widgetFrame, ipLabel, ipStatus])

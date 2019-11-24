@@ -19,13 +19,13 @@ class Graph:
 	def run(self):
 		canvas = FigureCanvasTkAgg(self.f, self.monitor.dataFrame)
 		canvas.draw()
-		canvas.get_tk_widget().place(relx=0, rely=0.4, relwidth=1, relheight=0.55)
+		canvas.get_tk_widget().pack(side="bottom", fill="x")
 
 		# toolbar = NavigationToolbar2Tk(canvas, self)
 		# toolbar.update()
 		# canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-		canvas._tkcanvas.place(relx=0, rely=0.4, relwidth=1, relheight=0.55)
+		canvas._tkcanvas.pack(side="bottom", fill="x")
 
 	def animate(self, i):
 		if len(self.monitor.application.c.connections) > 0:
