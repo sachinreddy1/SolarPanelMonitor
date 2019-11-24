@@ -7,19 +7,24 @@ from matplotlib import style
 import tkinter as tk
 from tkinter import ttk
 import sqlite3
+from Globs import *
 style.use("ggplot")
 
 class Graph:
 	def __init__ (self, monitor):
 		self.monitor = monitor
 		self.f = Figure(figsize=(5,5), dpi=100)
+		self.f.patch.set_facecolor(LIGHT_GRAY)
 		self.a = self.f.add_subplot(111)
+		self.a.set_facecolor(DARK_GRAY)
+		self.a.tick_params(axis='x', colors=DARK_GRAY)
+		self.a.tick_params(axis='y', colors=DARK_GRAY)
 		self.field = 'voltage_1'
 
 	def run(self):
 		canvas = FigureCanvasTkAgg(self.f, self.monitor.dataFrame)
 		canvas.draw()
-		canvas.get_tk_widget().pack(side="bottom", fill="x")
+		canvas.get_tk_widget().pack(side="bottom", fill="x", pady=5)
 
 		# toolbar = NavigationToolbar2Tk(canvas, self)
 		# toolbar.update()
@@ -39,7 +44,7 @@ class Graph:
 				yList.append(y)
 
 			self.a.clear()
-			self.a.plot(xList, yList)
+			self.a.plot(xList, yList, color=GREEN)
 
 	def getData(self, ip):
 		conn = sqlite3.connect('solarPanel.db')

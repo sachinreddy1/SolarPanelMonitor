@@ -9,14 +9,6 @@ import matplotlib.animation as animation
 HEIGHT = 500
 WIDTH = 675
 
-LIGHT_GRAY = '#ababab'
-MID_GRAY_1 = '#464646'
-MID_GRAY_2 = '#383735'
-MID_GRAY_3 = '#31302F'
-DARK_GRAY = '#262523'
-RED = '#cd5c5c'
-GREEN = '#32cd32'
-
 class Monitor():
 	def __init__ (self, application):
 		self.root = tk.Tk()
@@ -24,6 +16,7 @@ class Monitor():
 		self.root.winfo_toplevel().title("Solar Panel Monitor")
 		self.root.geometry('{}x{}'.format(WIDTH, HEIGHT))
 		self.root.configure(bg=MID_GRAY_2)
+		self.root.resizable(0,0)
 
 		self.application = application
 		self.graph = None
