@@ -119,8 +119,8 @@ class Monitor():
 		self.syncFrame.pack(side="bottom", fill="x")		
 
 	def setupButtons(self):
-		self.syncButton = tk.Button(self.syncFrame, text='sync', highlightbackground=MID_GRAY_1, font=20, command=lambda: self.application.inputting('sync'))
-		self.syncButton.pack(side="bottom", padx=40)
+		# self.syncButton = tk.Button(self.syncFrame, text='sync', highlightbackground=MID_GRAY_1, font=20, command=lambda: self.application.inputting('sync'))
+		# self.syncButton.pack(side="bottom", padx=40)
 
 		thresholdEntryButton = tk.Button(self.thresholdFrame_3, text="OK", highlightbackground=LIGHT_GRAY, font=40, command=lambda: self.application.thresholdInputting(self.voltageEntry.get(), self.currentEntry.get(), self.temperatureEntry.get(), self.selected))
 		thresholdEntryButton.pack(side="left", padx=5)
@@ -131,21 +131,6 @@ class Monitor():
 		self.toggleManualSwitchButton.pack(side="right", pady=2.5)
 		manualConfigLabel = tk.Label(manualConfigFrame, text="Manual Switch: ", bg=LIGHT_GRAY)
 		manualConfigLabel.pack(side="right")
-
-		#TESTING
-		# sync_button = Image.open('images/sync.png')
-		# sync_image_for_button = ImageTk.PhotoImage(sync_button)
-		# self.syncButton = tk.Button(self.syncFrame, image=sync_image_for_button, highlightbackground=MID_GRAY_1, highlightcolor=MID_GRAY_1, command=lambda: self.application.inputting('sync'))
-		# self.syncButton.config(width="16", height="16")
-		# self.syncButton.pack(side="bottom", padx=50)
-		# self.syncButton.config(image=sync_image_for_button) 
-
-		# go_button = Image.open('images/go.png')
-		# go_image_for_button = ImageTk.PhotoImage(go_button)
-		# thresholdEntryButton = tk.Button(self.thresholdFrame_3, image=go_image_for_button, highlightbackground=LIGHT_GRAY, highlightcolor=LIGHT_GRAY, command=lambda: self.application.thresholdInputting(self.voltageEntry.get(), self.currentEntry.get(), self.temperatureEntry.get(), self.selected))
-		# thresholdEntryButton.config(width="15", height="15")
-		# thresholdEntryButton.pack(side="left", padx=5)
-		# thresholdEntryButton.config(image=go_image_for_button) 
 
 	def setupQueryButtons(self):
 		queryButtonFrame = tk.Frame(self.dataFrame, bg=LIGHT_GRAY)
@@ -331,6 +316,22 @@ class Monitor():
 
 	def run(self):
 		self.setupButtons()
+
+		# Button Images
+		sync_button = Image.open('images/sync.png')
+		sync_image_for_button = ImageTk.PhotoImage(sync_button)
+		self.syncButton = tk.Button(self.syncFrame, image=sync_image_for_button, highlightbackground=MID_GRAY_1, highlightcolor=MID_GRAY_1, command=lambda: self.application.inputting('sync'))
+		self.syncButton.config(width="20", height="20")
+		self.syncButton.pack(side="bottom", padx=50)
+		self.syncButton.config(image=sync_image_for_button) 
+
+		# go_button = Image.open('images/go.png')
+		# go_image_for_button = ImageTk.PhotoImage(go_button)
+		# thresholdEntryButton = tk.Button(self.thresholdFrame_3, image=go_image_for_button, highlightbackground=LIGHT_GRAY, highlightcolor=LIGHT_GRAY, command=lambda: self.application.thresholdInputting(self.voltageEntry.get(), self.currentEntry.get(), self.temperatureEntry.get(), self.selected))
+		# thresholdEntryButton.config(width="20", height="20")
+		# thresholdEntryButton.pack(side="left", padx=5)
+		# thresholdEntryButton.config(image=go_image_for_button) 
+
 		self.graph = Graph(self)
 		self.graph.run()
 		ani = animation.FuncAnimation(self.graph.f, self.graph.animate, interval=1000)
