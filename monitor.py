@@ -89,19 +89,28 @@ class Monitor():
 		self.configFrame = tk.Frame(self.topFrame, bg=LIGHT_GRAY)
 		self.configFrame.pack(side="right", padx=10)
 
+		configFrame = tk.Frame(self.configFrame, bg=LIGHT_GRAY)
+		configFrame.pack(side="bottom", pady=2.5)
+
+		configFrame1 = tk.Frame(configFrame, bg=LIGHT_GRAY)
+		configFrame1.pack(side="left", pady=2.5)
+		configFrame2 = tk.Frame(configFrame, bg=LIGHT_GRAY)
+		configFrame2.pack(side="left", pady=2.5)
 		# Output Configuration
 		var4 = tk.IntVar()
-		checkboxD = tk.Checkbutton(self.configFrame, text="AD", background=LIGHT_GRAY, variable=var4, command=lambda: self.updateCheckbox(3))
+		checkboxD = tk.Checkbutton(configFrame2, text="AD", background=LIGHT_GRAY, variable=var4, command=lambda: self.updateCheckbox(3))
 		checkboxD.pack(side="bottom", pady=2.5)
 		var3 = tk.IntVar()
-		checkboxC = tk.Checkbutton(self.configFrame, text="BC", background=LIGHT_GRAY, variable=var3, command=lambda: self.updateCheckbox(2))
+		checkboxC = tk.Checkbutton(configFrame2, text="BC", background=LIGHT_GRAY, variable=var3, command=lambda: self.updateCheckbox(2))
 		checkboxC.pack(side="bottom", pady=2.5)
 		var2 = tk.IntVar()
-		checkboxB = tk.Checkbutton(self.configFrame, text="CD", background=LIGHT_GRAY, variable=var2, command=lambda: self.updateCheckbox(1))
+		checkboxB = tk.Checkbutton(configFrame2, text="CD", background=LIGHT_GRAY, variable=var2, command=lambda: self.updateCheckbox(1))
 		checkboxB.pack(side="bottom", pady=2.5)
 		var1 = tk.IntVar()
-		checkboxA = tk.Checkbutton(self.configFrame, text="X", background=LIGHT_GRAY, variable=var1, command=lambda: self.updateCheckbox(0))
+		checkboxA = tk.Checkbutton(configFrame2, text="X", background=LIGHT_GRAY, variable=var1, command=lambda: self.updateCheckbox(0))
 		checkboxA.pack(side="bottom", pady=2.5)
+		configLabel = tk.Label(configFrame1, text="Config Switch: ", bg=LIGHT_GRAY)
+		configLabel.pack(side="bottom")
 		self.vars = [var1, var2, var3, var4]
 
 	def setupSyncButton(self):
@@ -116,8 +125,12 @@ class Monitor():
 		thresholdEntryButton = tk.Button(self.thresholdFrame_3, text="OK", highlightbackground=LIGHT_GRAY, font=40, command=lambda: self.application.thresholdInputting(self.voltageEntry.get(), self.currentEntry.get(), self.temperatureEntry.get(), self.selected))
 		thresholdEntryButton.pack(side="left", padx=5)
 
-		self.toggleManualSwitchButton = tk.Button(self.configFrame, text="ON", highlightbackground=LIGHT_GRAY, font=40, command=lambda: self.application.manualSwitchInputting(self.selected))
-		self.toggleManualSwitchButton.pack(side="top", pady=2.5)
+		manualConfigFrame = tk.Frame(self.configFrame, bg=LIGHT_GRAY)
+		manualConfigFrame.pack(side="top", pady=2.5)
+		self.toggleManualSwitchButton = tk.Button(manualConfigFrame, text="ON", highlightbackground=LIGHT_GRAY, font=40, command=lambda: self.application.manualSwitchInputting(self.selected))
+		self.toggleManualSwitchButton.pack(side="right", pady=2.5)
+		manualConfigLabel = tk.Label(manualConfigFrame, text="Manual Switch: ", bg=LIGHT_GRAY)
+		manualConfigLabel.pack(side="right")
 
 		#TESTING
 		# sync_button = Image.open('images/sync.png')
