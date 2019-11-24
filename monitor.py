@@ -54,36 +54,42 @@ class Monitor():
 		thresholdFrame_2.pack(side="top", padx=43, pady=2.5, fill="x")
 		voltageEntryThreshold = tk.Label(thresholdFrame_2, text="Voltage: ", bg=LIGHT_GRAY)
 		voltageEntryThreshold.pack(side="left")
-		self.voltageEntry = tk.Entry(thresholdFrame_2, highlightbackground=LIGHT_GRAY, font=40, width=5)
+		self.voltageEntry = tk.Entry(thresholdFrame_2, highlightbackground=LIGHT_GRAY, bg=DARK_GRAY, font=40, width=5)
 		self.voltageEntry.insert(0, DEFAULT_VOLTAGE_THRES)
 		self.voltageEntry.bind('<FocusIn>', lambda event, i=0: self.on_entry_click(event, i))
 		self.voltageEntry.bind('<FocusOut>', lambda event, i=0: self.on_focusout(event, i))
 		self.voltageEntry.config(fg = 'grey')
 		self.voltageEntry.pack(side="left")
+		voltageUnit = tk.Label(thresholdFrame_2, text="V", bg=LIGHT_GRAY)
+		voltageUnit.pack(side="left")
 
 		# Current Threshold Label and Entry
 		self.thresholdFrame_3 = tk.Frame(thresholdFrame, bg=LIGHT_GRAY)
 		self.thresholdFrame_3.pack(side="top", padx=43, pady=2.5, fill="x")
 		currentEntryThreshold = tk.Label(self.thresholdFrame_3, text="Current: ", bg=LIGHT_GRAY)
 		currentEntryThreshold.pack(side="left")
-		self.currentEntry = tk.Entry(self.thresholdFrame_3, highlightbackground=LIGHT_GRAY, font=40, width=5)
+		self.currentEntry = tk.Entry(self.thresholdFrame_3, highlightbackground=LIGHT_GRAY, bg=DARK_GRAY, font=40, width=5)
 		self.currentEntry.insert(0, DEFAULT_CURRENT_THRES)
 		self.currentEntry.bind('<FocusIn>', lambda event, i=1: self.on_entry_click(event, i))
 		self.currentEntry.bind('<FocusOut>', lambda event, i=1: self.on_focusout(event, i))
 		self.currentEntry.config(fg = 'grey')
 		self.currentEntry.pack(side="left")
+		currentUnit = tk.Label(self.thresholdFrame_3, text="A", bg=LIGHT_GRAY)
+		currentUnit.pack(side="left")
 
 		# Temperature Threshold Label and Entry
 		thresholdFrame_4 = tk.Frame(thresholdFrame, bg=LIGHT_GRAY)
 		thresholdFrame_4.pack(side="top", padx=10, pady=2.5, fill="x")
 		temperatureEntryThreshold = tk.Label(thresholdFrame_4, text="Temperature: ", bg=LIGHT_GRAY)
 		temperatureEntryThreshold.pack(side="left")
-		self.temperatureEntry = tk.Entry(thresholdFrame_4, highlightbackground=LIGHT_GRAY, font=40, width=5)
+		self.temperatureEntry = tk.Entry(thresholdFrame_4, highlightbackground=LIGHT_GRAY, bg=DARK_GRAY, font=40, width=5)
 		self.temperatureEntry.insert(0, DEFAULT_TEMPERATURE_THRES)
 		self.temperatureEntry.bind('<FocusIn>', lambda event, i=2: self.on_entry_click(event, i))
 		self.temperatureEntry.bind('<FocusOut>', lambda event, i=2: self.on_focusout(event, i))
 		self.temperatureEntry.config(fg = 'grey')
 		self.temperatureEntry.pack(side="left")
+		temperatureUnit = tk.Label(thresholdFrame_4, text="C", bg=LIGHT_GRAY)
+		temperatureUnit.pack(side="left")
 
 	def setupCheckboxes(self):
 		self.configFrame = tk.Frame(self.topFrame, bg=LIGHT_GRAY)
@@ -257,15 +263,15 @@ class Monitor():
 		if i == 0:
 			self.voltageEntry.delete(0, "end")
 			self.voltageEntry.insert(0, '')
-			self.voltageEntry.config(fg = 'black')
+			self.voltageEntry.config(fg = 'grey')
 		if i == 1:
 			self.currentEntry.delete(0, "end")
 			self.currentEntry.insert(0, '')
-			self.currentEntry.config(fg = 'black')
+			self.currentEntry.config(fg = 'grey')
 		if i == 2:
 			self.temperatureEntry.delete(0, "end")
 			self.temperatureEntry.insert(0, '')
-			self.temperatureEntry.config(fg = 'black')
+			self.temperatureEntry.config(fg = 'grey')
 
 	def on_focusout(self, event, i):
 		if len(self.application.c.connections) == 0:
