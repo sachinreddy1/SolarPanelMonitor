@@ -17,19 +17,14 @@ class Graph:
 		self.f.patch.set_facecolor(LIGHT_GRAY)
 		self.a = self.f.add_subplot(111)
 		self.a.set_facecolor(DARK_GRAY)
-		self.a.tick_params(axis='x', colors=DARK_GRAY)
-		self.a.tick_params(axis='y', colors=DARK_GRAY)
+		self.a.tick_params(axis='x', colors="black")
+		self.a.tick_params(axis='y', colors="black")
 		self.field = 'voltage_1'
 
 	def run(self):
 		canvas = FigureCanvasTkAgg(self.f, self.monitor.dataFrame)
 		canvas.draw()
 		canvas.get_tk_widget().pack(side="bottom", fill="x", pady=5)
-
-		# toolbar = NavigationToolbar2Tk(canvas, self)
-		# toolbar.update()
-		# canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-
 		canvas._tkcanvas.pack(side="bottom", fill="x")
 
 	def animate(self, i):
