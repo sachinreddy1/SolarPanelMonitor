@@ -7,7 +7,7 @@ from Globs import *
 import matplotlib.animation as animation
 
 HEIGHT = 500
-WIDTH = 675
+WIDTH = 670
 
 class Monitor():
 	def __init__ (self, application):
@@ -45,13 +45,13 @@ class Monitor():
 
 		# Threshold Title
 		thresholdFrame_1 = tk.Frame(thresholdFrame, bg=LIGHT_GRAY)
-		thresholdFrame_1.pack(side="top", padx=8, pady=2.5, fill="x")
+		thresholdFrame_1.pack(side="top", padx=30, pady=2.5, fill="x")
 		thresholdTitle = tk.Label(thresholdFrame_1, text="Thresholds:", bg=LIGHT_GRAY, font='TkDefaultFont 14 bold')
 		thresholdTitle.pack(side="left")
 
 		# Voltage Threshold Label and Entry
 		thresholdFrame_2 = tk.Frame(thresholdFrame, bg=LIGHT_GRAY)
-		thresholdFrame_2.pack(side="top", padx=8, pady=2.5, fill="x")
+		thresholdFrame_2.pack(side="top", padx=43, pady=2.5, fill="x")
 		voltageEntryThreshold = tk.Label(thresholdFrame_2, text="Voltage: ", bg=LIGHT_GRAY)
 		voltageEntryThreshold.pack(side="left")
 		self.voltageEntry = tk.Entry(thresholdFrame_2, highlightbackground=LIGHT_GRAY, font=40, width=5)
@@ -63,7 +63,7 @@ class Monitor():
 
 		# Current Threshold Label and Entry
 		self.thresholdFrame_3 = tk.Frame(thresholdFrame, bg=LIGHT_GRAY)
-		self.thresholdFrame_3.pack(side="top", padx=8, pady=2.5, fill="x")
+		self.thresholdFrame_3.pack(side="top", padx=43, pady=2.5, fill="x")
 		currentEntryThreshold = tk.Label(self.thresholdFrame_3, text="Current: ", bg=LIGHT_GRAY)
 		currentEntryThreshold.pack(side="left")
 		self.currentEntry = tk.Entry(self.thresholdFrame_3, highlightbackground=LIGHT_GRAY, font=40, width=5)
@@ -75,8 +75,8 @@ class Monitor():
 
 		# Temperature Threshold Label and Entry
 		thresholdFrame_4 = tk.Frame(thresholdFrame, bg=LIGHT_GRAY)
-		thresholdFrame_4.pack(side="top", padx=25, pady=2.5, fill="x")
-		temperatureEntryThreshold = tk.Label(thresholdFrame_4, text="Heat: ", bg=LIGHT_GRAY)
+		thresholdFrame_4.pack(side="top", padx=10, pady=2.5, fill="x")
+		temperatureEntryThreshold = tk.Label(thresholdFrame_4, text="Temperature: ", bg=LIGHT_GRAY)
 		temperatureEntryThreshold.pack(side="left")
 		self.temperatureEntry = tk.Entry(thresholdFrame_4, highlightbackground=LIGHT_GRAY, font=40, width=5)
 		self.temperatureEntry.insert(0, DEFAULT_TEMPERATURE_THRES)
@@ -107,7 +107,7 @@ class Monitor():
 		checkboxB = tk.Checkbutton(configFrame2, text="CD", background=LIGHT_GRAY, variable=var2, command=lambda: self.updateCheckbox(1))
 		checkboxB.pack(side="bottom", pady=2.5)
 		var1 = tk.IntVar()
-		checkboxA = tk.Checkbutton(configFrame2, text="X", background=LIGHT_GRAY, variable=var1, command=lambda: self.updateCheckbox(0))
+		checkboxA = tk.Checkbutton(configFrame2, text="XX", background=LIGHT_GRAY, variable=var1, command=lambda: self.updateCheckbox(0))
 		checkboxA.pack(side="bottom", pady=2.5)
 		configLabel = tk.Label(configFrame1, text="Config Switch: ", bg=LIGHT_GRAY)
 		configLabel.pack(side="bottom")

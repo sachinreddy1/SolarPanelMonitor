@@ -20,6 +20,8 @@ class Graph:
 		self.a.tick_params(axis='x', colors="black")
 		self.a.tick_params(axis='y', colors="black")
 		self.field = 'voltage_1'
+		self.f.suptitle(self.field, fontsize=10, color="black")
+		self.t = self.f.text(0.92, 0.5, "X.X", fontweight="medium", transform=self.a.transAxes)
 
 	def run(self):
 		canvas = FigureCanvasTkAgg(self.f, self.monitor.dataFrame)
@@ -41,6 +43,12 @@ class Graph:
 			self.a.clear()
 			self.a.plot(xList, yList, color=GREEN)
 
+			self.t.remove()
+			labelValue = "X.X"
+			if len(yList) > 0:
+				labelValue = yList[-1]
+			self.t = self.f.text(0.92, 0.5, labelValue, fontweight="medium", transform=self.a.transAxes)
+
 	def getData(self, ip):
 		conn = sqlite3.connect('solarPanel.db')
 		cursor = conn.cursor()	
@@ -56,6 +64,7 @@ class Graph:
 
 	def setField(self, field):
 		self.field = field
+		self.f.suptitle(self.field, fontsize=10)
 
 	# ------------- #
 
