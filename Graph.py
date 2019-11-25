@@ -15,7 +15,7 @@ import numpy as np
 import datetime
 import time
 
-units = ["V", "V", "V", "A", "C", "C", "C", "C", "C", "C"]
+units = [" V", " V", " V", " A", " C", " C", " C", " C", " C", " C"]
 title = ["Voltage #1 vs. Time (Minutes)", "Voltage #2 vs. Time (Minutes)", "Voltage #3 vs. Time (Minutes)", "Current #1 vs. Time (Minutes)", "Temperature #1 vs. Time (Minutes)", "Temperature #2 vs. Time (Minutes)",
 		 "Temperature #3 vs. Time (Minutes)", "Temperature #4 vs. Time (Minutes)", "Temperature #5 vs. Time (Minutes)", "Temperature #6 vs. Time (Minutes)"]
 
@@ -30,7 +30,7 @@ class Graph:
 		self.a.tick_params(axis='y', colors="black")
 		self.field = 'voltage_1'
 		self.f.suptitle(title[self.getFieldIndex()], fontsize=10, color="black")
-		self.t = self.f.text(0.915, 0.5, "X.X", fontweight="medium", transform=self.a.transAxes)
+		self.t = self.f.text(0.913, 0.5, "X.X" + units[self.getFieldIndex()], fontsize=9, transform=self.a.transAxes)
 
 	def run(self):
 		canvas = FigureCanvasTkAgg(self.f, self.monitor.dataFrame)
@@ -52,13 +52,13 @@ class Graph:
 			self.a.clear()
 			self.a.plot_date(xList, yList, color=GREEN, fmt='-r')
 			self.a.xaxis.set_major_formatter(mdates.DateFormatter('%M:%S'))
-			self.a.tick_params(axis='x', which='major', labelsize=8)
+			self.a.tick_params(axis='both', which='major', labelsize=8)
 
 			self.t.remove()
 			labelValue = "X.X"
 			if len(yList) > 0:
 				labelValue = yList[-1]
-			self.t = self.f.text(0.915, 0.5, str(labelValue) + units[self.getFieldIndex()], fontweight="medium", transform=self.a.transAxes)
+			self.t = self.f.text(0.913, 0.5, str(labelValue) + units[self.getFieldIndex()], fontsize=8, transform=self.a.transAxes)
 
 	def getData(self, ip):
 		conn = sqlite3.connect('solarPanel.db')

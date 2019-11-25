@@ -46,7 +46,7 @@ class Monitor():
 		# Threshold Title
 		thresholdFrame_1 = tk.Frame(thresholdFrame, bg=LIGHT_GRAY)
 		thresholdFrame_1.pack(side="top", padx=30, pady=2.5, fill="x")
-		thresholdTitle = tk.Label(thresholdFrame_1, text="Thresholds:", bg=LIGHT_GRAY, font='TkDefaultFont 14 bold')
+		thresholdTitle = tk.Label(thresholdFrame_1, text="Thresholds:", bg=LIGHT_GRAY, font='Helvetica_Neue 13 bold')
 		thresholdTitle.pack(side="left")
 
 		# Voltage Threshold Label and Entry
