@@ -10,6 +10,11 @@ import sqlite3
 from Globs import *
 style.use("ggplot")
 
+import matplotlib.dates as mdates
+import numpy as np
+import datetime
+import time
+
 units = ["V", "V", "V", "A", "C", "C", "C", "C", "C", "C"]
 title = ["Voltage #1 vs. Time (Minutes)", "Voltage #2 vs. Time (Minutes)", "Voltage #3 vs. Time (Minutes)", "Current #1 vs. Time (Minutes)", "Temperature #1 vs. Time (Minutes)", "Temperature #2 vs. Time (Minutes)",
 		 "Temperature #3 vs. Time (Minutes)", "Temperature #4 vs. Time (Minutes)", "Temperature #5 vs. Time (Minutes)", "Temperature #6 vs. Time (Minutes)"]
@@ -41,12 +46,13 @@ class Graph:
 			for i in dataList:
 				x = i[0]
 				y = i[1]
-				# xList.append(x)
-				xList.append(self.convertTime(x))
+				xList.append(datetime.datetime.fromtimestamp(x))
 				yList.append(y)
 
 			self.a.clear()
-			self.a.plot(xList, yList, color=GREEN)
+			self.a.plot_date(xList, yList, color=GREEN, fmt='-r')
+			self.a.xaxis.set_major_formatter(mdates.DateFormatter('%M:%S'))
+			self.a.tick_params(axis='x', which='major', labelsize=8)
 
 			self.t.remove()
 			labelValue = "X.X"
@@ -94,12 +100,3 @@ class Graph:
 			return 9
 		else:
 			return 0
-
-	# ------------- #
-	# Will need to update this
-	def convertTime(self, seconds): 
-		seconds = seconds % (24 * 3600) 
-		seconds %= 3600
-		minutes = seconds // 60
-		seconds %= 60
-		return minutes + (seconds/60)
