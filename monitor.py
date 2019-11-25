@@ -324,7 +324,7 @@ class Monitor():
 		self.setupButtons()
 
 		# Button Images
-		sync_button = Image.open('images/sync.png')
+		sync_button = Image.open('sync.png')
 		sync_image_for_button = ImageTk.PhotoImage(sync_button)
 		self.syncButton = tk.Button(self.syncFrame, image=sync_image_for_button, highlightbackground=MID_GRAY_1, highlightcolor=MID_GRAY_1, command=lambda: self.application.inputting('sync'))
 		self.syncButton.config(width="20", height="20")
