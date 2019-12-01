@@ -2,20 +2,19 @@ import socket
 import threading
 from Connection import *
 
-IP = "192.168.1."
-
 TCP_PORT = 23
-INIT_CONNECTION = 90
-NUM_CONNECTIONS = 10
+INIT_CONNECTION = 0
+NUM_CONNECTIONS = 100
 TIMEOUT = 10
 
 class Connector:
    def __init__ (self):
       self.threads = []
       self.connections = []
+      self.ip = None
 
    # def scan(self, i):
-   #    address = IP + str(i) 
+   #    address = self.ip + str(i) 
    #    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
    #    # socket.setdefaulttimeout(1)
    #    s.settimeout(5)
@@ -24,7 +23,7 @@ class Connector:
    #       self.connections.append(Connection(s, address, TCP_PORT, True))  
 
    def scan(self, i):
-      address = IP + str(i) 
+      address = self.ip + str(i) 
       s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
       s.settimeout(TIMEOUT)
       try:
@@ -38,6 +37,9 @@ class Connector:
    def connect(self):
       self.threads = []
       self.connections = []
+
+      host_name = socket.gethostname()
+      self.ip = socket.gethostbyname(host_name).rpartition('.')[0] + "."
 
       for i in range(INIT_CONNECTION, INIT_CONNECTION + NUM_CONNECTIONS): 
          self.threads.append(threading.Thread(target=self.scan, args=(i,)))
