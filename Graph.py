@@ -57,7 +57,7 @@ class Graph:
 			self.t.remove()
 			labelValue = "X.X"
 			if len(yList) > 0:
-				labelValue = yList[-1]
+				labelValue = round(yList[-1],2)
 			self.t = self.f.text(0.913, 0.5, str(labelValue) + units[self.getFieldIndex()], fontsize=8, transform=self.a.transAxes)
 
 	def getData(self, ip):
