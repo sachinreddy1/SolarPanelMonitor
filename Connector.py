@@ -1,5 +1,6 @@
 import socket
 import threading
+# import netifaces as ni
 from Connection import *
 
 TCP_PORT = 23
@@ -12,15 +13,6 @@ class Connector:
       self.threads = []
       self.connections = []
       self.ip = None
-
-   # def scan(self, i):
-   #    address = self.ip + str(i) 
-   #    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-   #    # socket.setdefaulttimeout(1)
-   #    s.settimeout(5)
-   #    result = s.connect_ex((address,TCP_PORT))
-   #    if result == 0:
-   #       self.connections.append(Connection(s, address, TCP_PORT, True))  
 
    def scan(self, i):
       address = self.ip + str(i) 
@@ -37,9 +29,7 @@ class Connector:
    def connect(self):
       self.threads = []
       self.connections = []
-
-      host_name = socket.gethostname()
-      self.ip = socket.gethostbyname(host_name).rpartition('.')[0] + "."
+      self.ip = self.get_ip_address().rpartition('.')[0] + "."
 
       for i in range(INIT_CONNECTION, INIT_CONNECTION + NUM_CONNECTIONS): 
          self.threads.append(threading.Thread(target=self.scan, args=(i,)))
@@ -48,11 +38,6 @@ class Connector:
       for t in self.threads:
          t.join()
       print ("DONE.")
-
-   # def connect(self):
-   #    for i in range(1,NUM_CONNECTIONS): 
-   #       self.scan(i)
-   #    print "DONE."
 
    # ------------- #
 
@@ -68,7 +53,13 @@ class Connector:
 
       self.connections = []
       self.threads = []
-         
+
+   # ------------- #
+
+   def get_ip_address(self):
+      s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+      s.connect(("8.8.8.8", 80))
+      return s.getsockname()[0]
 
 if __name__ == "__main__":
    c = Connector()
