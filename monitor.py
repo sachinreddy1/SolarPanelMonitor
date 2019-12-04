@@ -6,8 +6,8 @@ from Globs import *
 
 import matplotlib.animation as animation
 
-HEIGHT = 500
-WIDTH = 670
+HEIGHT = 540
+WIDTH = 710 #670
 
 class Monitor():
 	def __init__ (self, application):
@@ -352,13 +352,6 @@ class Monitor():
 		self.syncButton.config(width="20", height="20")
 		self.syncButton.pack(side="bottom", padx=50)
 		self.syncButton.config(image=sync_image_for_button) 
-
-		# go_button = Image.open('images/go.png')
-		# go_image_for_button = ImageTk.PhotoImage(go_button)
-		# thresholdEntryButton = tk.Button(self.thresholdFrame_3, image=go_image_for_button, highlightbackground=LIGHT_GRAY, highlightcolor=LIGHT_GRAY, command=lambda: self.application.thresholdInputting(self.voltageEntry.get(), self.currentEntry.get(), self.temperatureEntry.get(), self.selected))
-		# thresholdEntryButton.config(width="20", height="20")
-		# thresholdEntryButton.pack(side="left", padx=5)
-		# thresholdEntryButton.config(image=go_image_for_button) 
 
 		self.graph = Graph(self)
 		self.graph.run()
