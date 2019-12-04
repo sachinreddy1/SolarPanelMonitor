@@ -53,16 +53,29 @@ class Application:
 
 					if packet["X"] != 0 and self.c.connections[currConnection].manualSwitch == 0:
 						self.c.connections[currConnection].currentAck = 1
-						self.monitor.widgetFrames[currConnection][2]['fg'] = RED
+						
 						if packet["X"] == 1:
+							self.monitor.widgetFrames[currConnection][2]['fg'] = RED
 							self.monitor.widgetFrames[currConnection][2]['text'] = 'Status: Over-Voltage'
 						if packet["X"] == 2:
+							self.monitor.widgetFrames[currConnection][2]['fg'] = RED
 							self.monitor.widgetFrames[currConnection][2]['text'] = 'Status: Over-Current'
 						if packet["X"] == 3:
+							self.monitor.widgetFrames[currConnection][2]['fg'] = RED
 							self.monitor.widgetFrames[currConnection][2]['text'] = 'Status: Over-Heating'
 
 					if self.c.connections[currConnection].manualSwitch == 1:
 						self.monitor.updateCheckbox(packet["S"])
+
+						if packet["X"] == 1:
+							self.monitor.widgetFrames[currConnection][2]['fg'] = RED
+							self.monitor.widgetFrames[currConnection][2]['text'] = 'Status: Over-Voltage'
+						if packet["X"] == 2:
+							self.monitor.widgetFrames[currConnection][2]['fg'] = RED
+							self.monitor.widgetFrames[currConnection][2]['text'] = 'Status: Over-Current'
+						if packet["X"] == 3:
+							self.monitor.widgetFrames[currConnection][2]['fg'] = RED
+							self.monitor.widgetFrames[currConnection][2]['text'] = 'Status: Over-Heating'
 
 					cursor.execute("INSERT INTO voltages VALUES (:timeRecorded, :ip, :voltage_1, :voltage_2, :voltage_3, :current_1, :temperature_1, :temperature_2, :temperature_3, :temperature_4, :temperature_5, :temperature_6)", 
 					{
