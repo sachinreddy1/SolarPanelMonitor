@@ -15,8 +15,8 @@ import numpy as np
 import datetime
 import time
 
-units = [" V", " V", " V", " A", " C", " C", " C", " C", " C", " C"]
-title = ["Voltage #1 vs. Time (Minutes)", "Voltage #2 vs. Time (Minutes)", "Voltage #3 vs. Time (Minutes)", "Current #1 vs. Time (Minutes)", "Temperature #1 vs. Time (Minutes)", "Temperature #2 vs. Time (Minutes)",
+units = ["V", "V", "V", "A", "C", "C", "C", "C", "C", "C"]
+title = ["Voltage_AD vs. Time (Minutes)", "Voltage_BC vs. Time (Minutes)", "Voltage_CD vs. Time (Minutes)", "Current vs. Time (Minutes)", "Temperature #1 vs. Time (Minutes)", "Temperature #2 vs. Time (Minutes)",
 		 "Temperature #3 vs. Time (Minutes)", "Temperature #4 vs. Time (Minutes)", "Temperature #5 vs. Time (Minutes)", "Temperature #6 vs. Time (Minutes)"]
 
 class Graph:
@@ -57,7 +57,7 @@ class Graph:
 			self.t.remove()
 			labelValue = "X.X"
 			if len(yList) > 0:
-				labelValue = round(yList[-1],2)
+				labelValue = round(yList[-1],1)
 			self.t = self.f.text(0.913, 0.5, str(labelValue) + units[self.getFieldIndex()], fontsize=8, transform=self.a.transAxes)
 
 	def getData(self, ip):

@@ -221,6 +221,7 @@ class Monitor():
 			if j == i:
 				self.vars[j].set(1)
 		self.application.configSwitchInputting(self.selected, i)
+		self.updateStatus()
 
 	def labelInteraction(self, event, index):
 		color = MID_GRAY_1
@@ -300,6 +301,27 @@ class Monitor():
 				if self.temperatureEntry.get() == '':
 					self.temperatureEntry.insert(0, self.application.c.connections[self.selected].temperatureValue)
 					self.temperatureEntry.config(fg = 'grey')
+
+	def updateEntries(self):
+		self.voltageEntry.delete(0, "end")
+		self.voltageEntry.insert(0, self.application.c.connections[self.selected].voltageValue)
+		self.voltageEntry.config(fg = 'grey')
+
+		self.currentEntry.delete(0, "end")
+		self.currentEntry.insert(0, self.application.c.connections[self.selected].currentValue)
+		self.currentEntry.config(fg = 'grey')
+
+		self.temperatureEntry.delete(0, "end")
+		self.temperatureEntry.insert(0, self.application.c.connections[self.selected].temperatureValue)
+		self.temperatureEntry.config(fg = 'grey')
+
+	def updateStatus(self):
+		if len(self.application.c.connections) == 0:
+			return
+
+		self.widgetFrames[self.selected][2]['fg'] = GREEN
+		self.widgetFrames[self.selected][2]['text'] = 'Status: Connected'
+		self.application.c.connections[self.selected].currentAck = 0
 
 	# ------------- #
 

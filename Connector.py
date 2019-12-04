@@ -6,13 +6,13 @@ from Connection import *
 TCP_PORT = 23
 INIT_CONNECTION = 0
 NUM_CONNECTIONS = 100
-TIMEOUT = 10
+TIMEOUT = 5
 
 class Connector:
    def __init__ (self):
       self.threads = []
       self.connections = []
-      self.ip = None
+      self.ip = "192.168.1."
 
    def scan(self, i):
       address = self.ip + str(i) 
@@ -29,7 +29,11 @@ class Connector:
    def connect(self):
       self.threads = []
       self.connections = []
-      self.ip = self.get_ip_address().rpartition('.')[0] + "."
+      
+      try:
+         self.ip = self.get_ip_address().rpartition('.')[0] + "."
+      except:
+         pass
 
       for i in range(INIT_CONNECTION, INIT_CONNECTION + NUM_CONNECTIONS): 
          self.threads.append(threading.Thread(target=self.scan, args=(i,)))

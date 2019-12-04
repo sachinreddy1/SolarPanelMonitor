@@ -12,3 +12,5 @@ class Connection:
 		self.temperatureValue = DEFAULT_TEMPERATURE_THRES
 		self.configSwitch = 0
 		self.manualSwitch = 0
+
+		self.currentAck = 0

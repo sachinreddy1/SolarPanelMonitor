@@ -51,6 +51,19 @@ class Application:
 					if currConnection != -1 and self.c.connections[currConnection].configSwitch != packet["S"] and packet["X"] != 0:
 						self.monitor.updateCheckbox(packet["S"])
 
+					if packet["X"] != 0 and self.c.connections[currConnection].manualSwitch == 0:
+						self.c.connections[currConnection].currentAck = 1
+						self.monitor.widgetFrames[currConnection][2]['fg'] = RED
+						if packet["X"] == 1:
+							self.monitor.widgetFrames[currConnection][2]['text'] = 'Status: Over-Voltage'
+						if packet["X"] == 2:
+							self.monitor.widgetFrames[currConnection][2]['text'] = 'Status: Over-Current'
+						if packet["X"] == 3:
+							self.monitor.widgetFrames[currConnection][2]['text'] = 'Status: Over-Heating'
+
+					if self.c.connections[currConnection].manualSwitch == 1:
+						self.monitor.updateCheckbox(packet["S"])
+
 					cursor.execute("INSERT INTO voltages VALUES (:timeRecorded, :ip, :voltage_1, :voltage_2, :voltage_3, :current_1, :temperature_1, :temperature_2, :temperature_3, :temperature_4, :temperature_5, :temperature_6)", 
 					{
 					'timeRecorded': time.time(), 
@@ -106,6 +119,7 @@ class Application:
 					data['T'] = i.temperatureValue
 					data['S'] = i.configSwitch
 					data['M'] = i.manualSwitch
+					data['ACK'] = i.currentAck
 					i.socket.send(json.dumps(data))
 					# RECEIVE
 					try:
@@ -126,9 +140,14 @@ class Application:
 		if len(self.c.connections) == 0:
 			return
 
-		self.c.connections[i].voltageValue = voltageValue
-		self.c.connections[i].currentValue = currentValue
-		self.c.connections[i].temperatureValue = temperatureValue
+		try:
+			self.c.connections[i].voltageValue = max(min(float(voltageValue), MAX_VOLTAGE_THRES), MIN_VOLTAGE_THRES)
+			self.c.connections[i].currentValue = max(min(float(currentValue), MAX_CURRENT_THRES), MIN_CURRENT_THRES)
+			self.c.connections[i].temperatureValue = max(min(float(temperatureValue), MAX_TEMPERATURE_THRES), MIN_TEMPERATURE_THRES)
+		except:
+			pass
+
+		self.monitor.updateEntries()
 
 	def configSwitchInputting(self, connection, i):
 		if len(self.c.connections) == 0:
@@ -139,6 +158,7 @@ class Application:
 		if len(self.c.connections) == 0:
 			return
 
+		self.monitor.updateStatus()
 		if self.c.connections[i].manualSwitch == 0:
 			self.c.connections[i].manualSwitch = 1
 			self.monitor.toggleManualSwitchButton['text'] = 'OFF'	#
