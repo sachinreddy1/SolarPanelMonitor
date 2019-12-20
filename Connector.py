@@ -1,6 +1,5 @@
 import socket
 import threading
-# import netifaces as ni
 from Connection import *
 
 TCP_PORT = 23
@@ -8,10 +7,12 @@ INIT_CONNECTION = 0
 NUM_CONNECTIONS = 100
 TIMEOUT = 5
 
+# Main class for IP Scanner
 class Connector:
    def __init__ (self):
       self.threads = []
       self.connections = []
+      # Default IP address
       self.ip = "192.168.1."
 
    def scan(self, i):
