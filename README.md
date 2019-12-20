@@ -14,3 +14,7 @@ Must use python2 and pip2 for installing packages.
 
 ## Run
 python2 SolarPanelMonitor.py
+
+## Building
+source venv/bin/activate
+python2 Setup.py py2app -A
