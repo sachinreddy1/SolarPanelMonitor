@@ -68,7 +68,7 @@ class Connector:
 
 if __name__ == "__main__":
    c = Connector()
-   print c.get_ip_address().rpartition('.')[0] + "."
+   print(c.get_ip_address().rpartition('.')[0] + ".")
    c.connect()
 
    print (len(c.connections))
