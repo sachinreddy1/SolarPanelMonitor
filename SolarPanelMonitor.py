@@ -139,7 +139,7 @@ class Application:
 						self.lastData = i.socket.recv(BUFFER_SIZE)
 						self.lastIP = i.ip
 					except:
-						print "Timed out."
+						print("Timed out.")
 					
 			if self.command == 'quit':
 				return
